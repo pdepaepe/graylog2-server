@@ -32,7 +32,7 @@ import org.graylog2.indexer.results.ScrollResult;
 import org.graylog2.indexer.results.SearchResult;
 import org.graylog2.indexer.searches.Searches;
 import org.graylog2.indexer.searches.Sorting;
-import org.graylog2.indexer.searches.timeranges.AbsoluteRange;
+import org.graylog2.plugin.indexer.searches.timeranges.AbsoluteRange;
 import org.graylog2.rest.models.messages.responses.ResultMessageSummary;
 import org.graylog2.rest.models.search.responses.FieldStatsResult;
 import org.graylog2.rest.models.search.responses.HistogramResult;
@@ -107,7 +107,7 @@ public abstract class SearchResource extends RestResource {
     }
 
     protected org.graylog2.indexer.results.FieldStatsResult fieldStats(String field, String query, String filter,
-                                                                       org.graylog2.indexer.searches.timeranges.TimeRange timeRange) throws InvalidRangeFormatException {
+                                                                       org.graylog2.plugin.indexer.searches.timeranges.TimeRange timeRange) throws InvalidRangeFormatException {
         try {
             return searches.fieldStats(field, query, filter, timeRange);
         } catch (Searches.FieldTypeException e) {
@@ -125,7 +125,7 @@ public abstract class SearchResource extends RestResource {
                                                                           String query,
                                                                           String interval,
                                                                           String filter,
-                                                                          org.graylog2.indexer.searches.timeranges.TimeRange timeRange,
+                                                                          org.graylog2.plugin.indexer.searches.timeranges.TimeRange timeRange,
                                                                           boolean includeCardinality) throws InvalidRangeFormatException {
         try {
             return searches.fieldHistogram(
@@ -149,7 +149,7 @@ public abstract class SearchResource extends RestResource {
         return TermsStatsResult.create(tr.took().millis(), tr.getResults(), tr.getBuiltQuery());
     }
 
-    protected SearchResponse buildSearchResponse(SearchResult sr, org.graylog2.indexer.searches.timeranges.TimeRange timeRange) {
+    protected SearchResponse buildSearchResponse(SearchResult sr, org.graylog2.plugin.indexer.searches.timeranges.TimeRange timeRange) {
         return SearchResponse.create(sr.getOriginalQuery(),
                 sr.getBuiltQuery(),
                 indexRangeListToValueList(sr.getUsedIndices()),

@@ -135,7 +135,6 @@ public class RestPermissions {
     // Standard set of permissions of readers.
     public static final Set<String> READER_BASE_PERMISSIONS = ImmutableSet.<String>builder().add(
                     BUFFERS_READ,
-                    FIELDNAMES_READ,
                     INDEXERCLUSTER_READ,
                     INPUTS_READ,
                     JOURNAL_READ,
@@ -145,9 +144,9 @@ public class RestPermissions {
                     METRICS_READ,
                     SYSTEM_READ,
                     THROUGHPUT_READ,
-                    SAVEDSEARCHES_CREATE,
-                    SAVEDSEARCHES_EDIT,
-                    SAVEDSEARCHES_READ
+                    USERS_TOKENCREATE,
+                    USERS_TOKENLIST,
+                    USERS_TOKENREMOVE
     ).build();
 
     private static final Map<String, Collection<String>> ALL_PERMISSIONS;

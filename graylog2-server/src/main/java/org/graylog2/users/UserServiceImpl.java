@@ -88,7 +88,7 @@ public class UserServiceImpl extends PersistedServiceImpl implements UserService
         }
 
         final DBObject query = new BasicDBObject();
-	query.put(UserImpl.USERNAME, Pattern.compile(username, Pattern.CASE_INSENSITIVE));
+	query.put(UserImpl.USERNAME, lowercaseUsername);
 
         final List<DBObject> result = query(UserImpl.class, query);
         if (result == null || result.isEmpty()) {

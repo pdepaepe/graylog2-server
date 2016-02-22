@@ -34,12 +34,6 @@
       supportedSubmitMethods: ['get', 'post', 'put', 'delete'],
       onComplete: function(swaggerApi, swaggerUi){
 
-        // We are taking the base path of the system API here. This will break if you should ever rename it lol.
-        if(swaggerApi.System && apiTarget != swaggerApi.System.basePath) {
-          alert("IMPORTANT: Please use the configured REST transport address (" + swaggerApi.System.basePath + ") if you want working examples. " +
-                  "This connection to " + apiTarget + " will cause problems with Access-Control-Allow-Origin.");
-        }
-
         if(console) {
           console.log("Loaded SwaggerUI")
         }
@@ -55,14 +49,7 @@
     });
 
     var updateApiAuth = function() {
-        var user = $('#input_apiUser')[0].value;
-        var pass = $('#input_apiPassword')[0].value;
-        if(user && user.trim() != "" && pass && pass.trim() != "") {
-            window.authorizations.add("basic", new PasswordAuthorization("creds", user, pass));
-        }
     };
-    $('#input_apiUser').change(updateApiAuth);
-    $('#input_apiPassword').change(updateApiAuth);
     window.swaggerUi.load();
   });
 
@@ -73,14 +60,8 @@
 <div id='header'>
   <div class="swagger-ui-wrap">
     <img src="/api-browser/images/toplogo.png">
-    <span class="subtitle">REST API browser</span>
+    <span class="subtitle">REST API - Read only documentation</span>
     <form id="api_selector">
-      <div class="input">
-        <input type="text" name="user" id="input_apiUser" placeholder="Username"/>
-      </div>
-      <div class="input">
-        <input type="password" name="password" id="input_apiPassword" placeholder="Password"/>
-      </div>
     </form>
   </div>
 </div>

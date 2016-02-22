@@ -109,14 +109,6 @@ public class MongoDbConfigurationTest {
         assertEquals(2, configuration.getReplicaSet().size());
     }
 
-    @Test
-    public void testGetMongoDBReplicaSetServersIPv6() throws RepositoryException, ValidationException {
-        MongoDbConfiguration configuration = new MongoDbConfiguration();
-        new JadConfig(new InMemoryRepository(singletonMap("mongodb_replica_set", "fe80::221:6aff:fe6f:6c88,[fe80::221:6aff:fe6f:6c89]:27018,127.0.0.1:27019")), configuration).process();
-
-        assertEquals(3, configuration.getReplicaSet().size());
-    }
-
     @Test(expected = ValidationException.class)
     public void testValidateMongoDbAuth() throws RepositoryException, ValidationException {
         MongoDbConfiguration configuration = new MongoDbConfiguration();

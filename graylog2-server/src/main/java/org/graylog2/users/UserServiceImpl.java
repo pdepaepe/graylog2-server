@@ -51,6 +51,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -78,15 +79,16 @@ public class UserServiceImpl extends PersistedServiceImpl implements UserService
     @Override
     public User load(final String username) {
         LOG.debug("Loading user {}", username);
+	final String lowercaseUsername = username.toLowerCase();
 
         // special case for the locally defined user, we don't store that in MongoDB.
-        if (configuration.getRootUsername().equals(username)) {
+	if (configuration.getRootUsername().toLowerCase().equals(lowercaseUsername)) {
             LOG.debug("User {} is the built-in admin user", username);
             return new UserImpl.LocalAdminUser(configuration, roleService.getAdminRoleObjectId());
         }
 
         final DBObject query = new BasicDBObject();
-        query.put(UserImpl.USERNAME, username);
+	query.put(UserImpl.USERNAME, Pattern.compile(username, Pattern.CASE_INSENSITIVE));
 
         final List<DBObject> result = query(UserImpl.class, query);
         if (result == null || result.isEmpty()) {
@@ -102,7 +104,7 @@ public class UserServiceImpl extends PersistedServiceImpl implements UserService
         final DBObject userObject = result.get(0);
         final Object userId = userObject.get("_id");
 
-        LOG.debug("Loaded user {}/{} from MongoDB", username, userId);
+        LOG.debug("Loaded user {}/{} from MongoDB", lowercaseUsername, userId);
         return new UserImpl((ObjectId) userId, userObject.toMap());
     }
 

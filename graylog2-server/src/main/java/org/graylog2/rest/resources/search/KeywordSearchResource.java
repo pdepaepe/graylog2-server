@@ -112,42 +112,6 @@ public class KeywordSearchResource extends SearchResource {
     }
 
     @GET
-    @Timed
-    @ApiOperation(value = "Message search with keyword as timerange.",
-            notes = "Search for messages in a timerange defined by a keyword like \"yesterday\" or \"2 weeks ago to wednesday\".")
-    @Produces(AdditionalMediaType.TEXT_CSV)
-    @ApiResponses(value = {
-            @ApiResponse(code = 400, message = "Invalid keyword provided.")
-    })
-    public ChunkedOutput<ScrollResult.ScrollChunk> searchKeywordChunked(
-            @ApiParam(name = "query", value = "Query (Lucene syntax)", required = true)
-            @QueryParam("query") @NotEmpty String query,
-            @ApiParam(name = "keyword", value = "Range keyword", required = true) @QueryParam("keyword") String keyword,
-            @ApiParam(name = "limit", value = "Maximum number of messages to return.", required = false) @QueryParam("limit") int limit,
-            @ApiParam(name = "offset", value = "Offset", required = false) @QueryParam("offset") int offset,
-            @ApiParam(name = "filter", value = "Filter", required = false) @QueryParam("filter") String filter,
-            @ApiParam(name = "fields", value = "Comma separated list of fields to return", required = true) @QueryParam("fields") String fields) {
-        checkSearchPermission(filter, RestPermissions.SEARCHES_KEYWORD);
-
-        final List<String> fieldList = parseFields(fields);
-        final TimeRange timeRange = buildKeywordTimeRange(keyword);
-
-        try {
-            final ScrollResult scroll = searches
-                    .scroll(query, timeRange, limit, offset, fieldList, filter);
-            final ChunkedOutput<ScrollResult.ScrollChunk> output = new ChunkedOutput<>(ScrollResult.ScrollChunk.class);
-
-            LOG.debug("[{}] Scroll result contains a total of {} messages", scroll.getQueryHash(), scroll.totalHits());
-            Runnable scrollIterationAction = createScrollChunkProducer(scroll, output, limit);
-            // TODO use a shared executor for async responses here instead of a single thread that's not limited
-            new Thread(scrollIterationAction).start();
-            return output;
-        } catch (SearchPhaseExecutionException e) {
-            throw createRequestExceptionForParseFailure(query, e);
-        }
-    }
-
-    @GET
     @Path("/histogram")
     @Timed
     @ApiOperation(value = "Datetime histogram of a query using keyword timerange.")

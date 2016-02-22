@@ -296,7 +296,7 @@ public class ClusterEventPeriodicalTest {
 
     @Test
     public void prepareCollectionCreatesIndexesOnExistingCollection() throws Exception {
-        DBCollection original = mongoConnection.getDatabase().createCollection(ClusterEventPeriodical.COLLECTION_NAME, null);
+	DBCollection original = mongoConnection.getDatabase().getCollection(ClusterEventPeriodical.COLLECTION_NAME);
         original.dropIndexes();
         assertThat(original.getName()).isEqualTo(ClusterEventPeriodical.COLLECTION_NAME);
         assertThat(original.getIndexInfo()).hasSize(1);
@@ -304,7 +304,7 @@ public class ClusterEventPeriodicalTest {
         DBCollection collection = ClusterEventPeriodical.prepareCollection(mongoConnection);
         assertThat(collection.getName()).isEqualTo(ClusterEventPeriodical.COLLECTION_NAME);
         assertThat(collection.getIndexInfo()).hasSize(2);
-        assertThat(collection.getWriteConcern()).isEqualTo(WriteConcern.FSYNCED);
+        assertThat(collection.getWriteConcern()).isEqualTo(WriteConcern.JOURNALED);
     }
 
     @Test
@@ -315,7 +315,7 @@ public class ClusterEventPeriodicalTest {
 
         assertThat(collection.getName()).isEqualTo(ClusterEventPeriodical.COLLECTION_NAME);
         assertThat(collection.getIndexInfo()).hasSize(2);
-        assertThat(collection.getWriteConcern()).isEqualTo(WriteConcern.FSYNCED);
+        assertThat(collection.getWriteConcern()).isEqualTo(WriteConcern.JOURNALED);
     }
 
     public static class SimpleEventHandler {

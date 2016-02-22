@@ -16,7 +16,9 @@
  */
 package org.graylog2.database;
 
-import com.mongodb.CommandFailureException;
+import com.github.zafarkhaja.semver.Version;
+import com.mongodb.BasicDBList;
+import com.mongodb.CommandResult;
 import com.mongodb.DB;
 import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
@@ -34,6 +36,7 @@ import javax.inject.Singleton;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
+
 
 /**
  * MongoDB connection singleton

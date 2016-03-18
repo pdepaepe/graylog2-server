@@ -22,7 +22,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ListMultimap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.graylog2.Configuration;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -35,7 +34,6 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 
 public class RestPermissions {
     private static final Logger LOG = LoggerFactory.getLogger(RestPermissions.class);
-    private final Configuration configuration;
 
     /**
      *These should all be in the form of "group:action", because {@link #allPermissions()} below depends on it.
@@ -135,35 +133,17 @@ public class RestPermissions {
     public static final String CLUSTER_CONFIG_ENTRY_DELETE = "clusterconfigentry:delete";
 
     // Standard set of permissions of readers.
-    if(configuration.isUserRestricted()) {
-	    public static final Set<String> READER_BASE_PERMISSIONS = ImmutableSet.<String>builder().add(
-                	    INDEXERCLUSTER_READ,
-	                    MESSAGECOUNT_READ,
-        	            MESSAGES_READ,
-	                    METRICS_READ,
-        	            SYSTEM_READ,
-                	    THROUGHPUT_READ,
-	                    USERS_TOKENCREATE,
-        	            USERS_TOKENLIST,
-                	    USERS_TOKENREMOVE
-	    ).build();
-    } else {
-            public static final Set<String> READER_BASE_PERMISSIONS = ImmutableSet.<String>builder().add(
-                            BUFFERS_READ,
-                            INDEXERCLUSTER_READ,
-                            INPUTS_READ,
-                            JOURNAL_READ,
-                            JVMSTATS_READ,
-                            MESSAGECOUNT_READ,
-                            MESSAGES_READ,
-                            METRICS_READ,
-                            SYSTEM_READ,
-                            THROUGHPUT_READ,
-                            USERS_TOKENCREATE,
-                            USERS_TOKENLIST,
-                            USERS_TOKENREMOVE
-            ).build();
-    }
+    public static final Set<String> READER_BASE_PERMISSIONS = ImmutableSet.<String>builder().add(
+               	    INDEXERCLUSTER_READ,
+                    MESSAGECOUNT_READ,
+       	            MESSAGES_READ,
+                    METRICS_READ,
+       	            SYSTEM_READ,
+               	    THROUGHPUT_READ,
+                    USERS_TOKENCREATE,
+       	            USERS_TOKENLIST,
+               	    USERS_TOKENREMOVE
+    ).build();
 
     private static final Map<String, Collection<String>> ALL_PERMISSIONS;
 

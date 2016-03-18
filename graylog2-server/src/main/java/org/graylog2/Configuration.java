@@ -153,7 +153,7 @@ public class Configuration extends BaseConfiguration {
     private Duration indexRangesCleanupInterval = Duration.hours(1L);
 
     @Parameter(value = "user_restricted")
-    private boolean userRestricted = true;
+    private boolean userRestricted = false;
 
     public boolean isMaster() {
         return isMaster;

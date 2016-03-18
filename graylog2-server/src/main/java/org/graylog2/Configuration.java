@@ -152,6 +152,9 @@ public class Configuration extends BaseConfiguration {
     @Parameter(value = "index_ranges_cleanup_interval", validator = PositiveDurationValidator.class)
     private Duration indexRangesCleanupInterval = Duration.hours(1L);
 
+    @Parameter(value = "user_restricted")
+    private boolean userRestricted = true;
+
     public boolean isMaster() {
         return isMaster;
     }
@@ -291,6 +294,10 @@ public class Configuration extends BaseConfiguration {
 
     public boolean isContentPacksLoaderEnabled() {
         return contentPacksLoaderEnabled;
+    }
+
+    public boolean isUserRestricted() {
+        return userRestricted;
     }
 
     public Path getContentPacksDir() {

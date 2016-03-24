@@ -79,7 +79,7 @@ public class UserServiceImpl extends PersistedServiceImpl implements UserService
     @Override
     public User load(final String username) {
         LOG.debug("Loading user {}", username);
-	final String lowercaseUsername = username.toLowerCase();
+	final String lowercaseUsername = username.toLowerCase().trim();
 
         // special case for the locally defined user, we don't store that in MongoDB.
 	if (configuration.getRootUsername().toLowerCase().equals(lowercaseUsername)) {

@@ -82,7 +82,7 @@ public class UserServiceImpl extends PersistedServiceImpl implements UserService
 	final String lowercaseUsername = username.toLowerCase().trim();
 
         // special case for the locally defined user, we don't store that in MongoDB.
-	if (configuration.getRootUsername().toLowerCase().equals(lowercaseUsername)) {
+	if (configuration.getRootUsername().toLowerCase().trim().equals(lowercaseUsername)) {
             LOG.debug("User {} is the built-in admin user", username);
             return new UserImpl.LocalAdminUser(configuration, roleService.getAdminRoleObjectId());
         }

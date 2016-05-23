@@ -10,6 +10,10 @@ const AppConfig = {
   rootTimeZone() {
     return window.appConfig.rootTimeZone;
   },
+
+  customUsername() {
+    return window.appConfig.customUsername;
+  }
 };
 
 export default AppConfig;

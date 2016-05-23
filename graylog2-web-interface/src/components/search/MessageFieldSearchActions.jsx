@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import {SplitButton, MenuItem} from 'react-bootstrap';
+import {Button, MenuItem} from 'react-bootstrap';
 import ExtractorUtils from 'util/ExtractorUtils';
 
 const MessageFieldSearchActions = React.createClass({
@@ -25,20 +25,13 @@ const MessageFieldSearchActions = React.createClass({
   render() {
     return (
       <div className="message-field-actions pull-right">
-        <SplitButton pullRight
+        <Button pullRight={true}
                      bsSize="xsmall"
-                     title={<i className="fa fa-search-plus"></i>}
+                     title="Search term"
                      key={1}
-                     onClick={this.props.onAddFieldToSearchBar}
-                     id={`more-actions-dropdown-field-${this.props.fieldName}`}>
-          <li className="dropdown-submenu left-submenu">
-            <a href="#">Create extractor for field {this.props.fieldName}</a>
-            <ul className="dropdown-menu">
-              {ExtractorUtils.EXTRACTOR_TYPES.map(extractorType => this._formatExtractorMenuItem(extractorType))}
-            </ul>
-          </li>
-          <MenuItem onSelect={this.props.onLoadTerms(this.props.fieldName)}>Show terms of {this.props.fieldName}</MenuItem>
-        </SplitButton>
+                     onClick={this.props.onAddFieldToSearchBar}>
+                     <i className="fa fa-search-plus"></i><
+        </Button>
       </div>
     );
   },

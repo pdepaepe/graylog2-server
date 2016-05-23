@@ -88,6 +88,9 @@ public class Configuration extends BaseConfiguration {
     @Parameter(value = "root_timezone")
     private DateTimeZone rootTimeZone = DateTimeZone.UTC;
 
+    @Parameter(value = "custom_username")
+    private String customUsername = "Username";
+
     @Parameter(value = "root_email")
     private String rootEmail = "";
 
@@ -218,6 +221,10 @@ public class Configuration extends BaseConfiguration {
 
     public DateTimeZone getRootTimeZone() {
         return rootTimeZone;
+    }
+
+    public String getCustomUsername() {
+        return customUsername;
     }
 
     public String getRootEmail() {

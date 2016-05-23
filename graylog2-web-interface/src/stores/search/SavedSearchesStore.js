@@ -30,8 +30,6 @@ const SavedSearchesStore = Reflux.createStore({
         this.trigger({savedSearches: this.savedSearches});
       })
       .catch(error => {
-        UserNotification.error('Fetching saved searches failed with status: ' + error,
-          'Could not get saved searches');
       });
 
     SavedSearchesActions.list.promise(promise);

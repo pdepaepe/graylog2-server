@@ -64,6 +64,7 @@ public class AppConfigResource {
             put("rootTimeZone", configuration.getRootTimeZone());
             put("serverUri", buildEndpointUri(headers));
             put("appPathPrefix", "");
+            put("customUsername", configuration.getCustomUsername());
         }};
         return engine.transform(template, model);
     }

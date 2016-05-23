@@ -88,15 +88,16 @@ public class UserServiceImpl extends PersistedServiceImpl implements UserService
     @Nullable
     public User load(final String username) {
         LOG.debug("Loading user {}", username);
+        final String lowercaseUsername = username.toLowerCase().trim();
 
         // special case for the locally defined user, we don't store that in MongoDB.
-        if (configuration.getRootUsername().equals(username)) {
-            LOG.debug("User {} is the built-in admin user", username);
+        if (configuration.getRootUsername().toLowerCase().equals(lowercaseUsername)) {
+            LOG.debug("User {} is the built-in admin user", lowercaseUsername);
             return userFactory.createLocalAdminUser(roleService.getAdminRoleObjectId());
         }
 
         final DBObject query = new BasicDBObject();
-        query.put(UserImpl.USERNAME, username);
+        query.put(UserImpl.USERNAME, lowercaseUsername);
 
         final List<DBObject> result = query(UserImpl.class, query);
         if (result == null || result.isEmpty()) {
@@ -112,7 +113,7 @@ public class UserServiceImpl extends PersistedServiceImpl implements UserService
         final DBObject userObject = result.get(0);
         final Object userId = userObject.get("_id");
 
-        LOG.debug("Loaded user {}/{} from MongoDB", username, userId);
+        LOG.debug("Loaded user {}/{} from MongoDB", lowercaseUsername, userId);
         return userFactory.create((ObjectId) userId, userObject.toMap());
     }
 

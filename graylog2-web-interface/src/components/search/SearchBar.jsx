@@ -337,24 +337,6 @@ const SearchBar = React.createClass({
     return selector;
   },
 
-  _getSavedSearchesSelector() {
-    const sortedSavedSearches = this.props.savedSearches.sort((searchA, searchB) => {
-      return searchA.title.toLowerCase().localeCompare(searchB.title.toLowerCase());
-    });
-
-    return (
-      <ChosenSelectInput ref="savedSearchesSelector"
-                         className="input-sm"
-                         value={this.state.savedSearch}
-                         dataPlaceholder="Saved searches"
-                         onChange={this._savedSearchSelected}>
-        {sortedSavedSearches.map((savedSearch) => {
-          return <option key={savedSearch.id} value={savedSearch.id}>{savedSearch.title}</option>;
-        })}
-      </ChosenSelectInput>
-    );
-  },
-
   render() {
     return (
       <div className="row no-bm">
@@ -397,17 +379,6 @@ const SearchBar = React.createClass({
                       {this._getRangeTypeSelector()}
                     </div>
                     <div className="col-md-6">
-                      <div className="saved-searches-selector-container pull-right"
-                           style={{ display: 'inline-flex', marginRight: 5 }}>
-                        {this.props.displayRefreshControls &&
-                        <div style={{ marginRight: 5 }}>
-                          <RefreshControls />
-                        </div>
-                        }
-                        <div style={{ width: 270 }}>
-                          {this._getSavedSearchesSelector()}
-                        </div>
-                      </div>
                     </div>
                   </div>
                 </div>

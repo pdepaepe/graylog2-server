@@ -62,7 +62,7 @@ const LoginPage = React.createClass({
 
               {alert}
 
-              <Input ref="username" type="text" placeholder={AppConfig.customUsername} autoFocus />
+              <Input ref="username" type="text" placeholder={AppConfig.customUsername()} autoFocus />
 
               <Input ref="password" type="password" placeholder="Password" />
 

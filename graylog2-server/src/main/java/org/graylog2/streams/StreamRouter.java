@@ -56,7 +56,7 @@ public class StreamRouter {
 
         final StreamRouterEngineUpdater streamRouterEngineUpdater = new StreamRouterEngineUpdater(routerEngine, routerEngineFactory, streamService, executorService());
         this.routerEngine.set(streamRouterEngineUpdater.getNewEngine());
-        scheduler.scheduleAtFixedRate(streamRouterEngineUpdater, 0, ENGINE_UPDATE_INTERVAL, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(streamRouterEngineUpdater, 0, ENGINE_UPDATE_INTERVAL, TimeUnit.MINUTES);
     }
 
     private ExecutorService executorService() {

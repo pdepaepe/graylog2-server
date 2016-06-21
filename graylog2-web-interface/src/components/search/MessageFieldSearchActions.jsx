@@ -30,7 +30,7 @@ const MessageFieldSearchActions = React.createClass({
                      title="Search term"
                      key={1}
                      onClick={this.props.onAddFieldToSearchBar}>
-                     <i className="fa fa-search-plus"></i><
+                     <i className="fa fa-search-plus"></i>
         </Button>
       </div>
     );

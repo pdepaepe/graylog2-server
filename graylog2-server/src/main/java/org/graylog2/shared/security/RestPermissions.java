@@ -233,7 +233,8 @@ public class RestPermissions implements PluginPermissions {
             THROUGHPUT_READ,
             USERS_TOKENCREATE,
             USERS_TOKENLIST,
-            USERS_TOKENREMOVE
+            USERS_TOKENREMOVE,
+	    CLUSTER_CONFIG_ENTRY_READ
     ).build();
 
     protected static final Set<Permission> READER_BASE_PERMISSIONS = PERMISSIONS.stream()

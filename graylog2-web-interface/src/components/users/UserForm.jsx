@@ -276,51 +276,6 @@ const UserForm = React.createClass({
             </form>
           </Col>
         </Row>
-        <Row className="content">
-          <Col lg={8}>
-            <h2>Change password</h2>
-            {user.read_only ?
-            <Col smOffset={3} sm={9}>
-              <Alert bsStyle="warning" role="alert">
-                Please edit your Graylog server configuration file to change the admin password.
-              </Alert>
-            </Col>
-            :
-              user.external ?
-              <Col smOffset={3} sm={9}>
-                <Alert bsStyle="warning" role="alert">
-                  This user was created from an external system and you can't change the password here.
-                  Please contact an administrator for more information.
-                </Alert>
-              </Col>
-              :
-              <form className="form-horizontal" style={{ marginTop: 10 }} onSubmit={this._changePassword}>
-                {requiresOldPassword &&
-                  <Input ref="old_password" name="old_password" id="old_password" type="password" maxLength={100}
-                         labelClassName="col-sm-3" wrapperClassName="col-sm-9"
-                         label="Old Password" required />
-                }
-                <Input ref="password" name="password" id="password" type="password" maxLength={100}
-                       labelClassName="col-sm-3" wrapperClassName="col-sm-9"
-                       label="New Password" required minLength="6"
-                       help="Passwords must be at least 6 characters long. We recommend using a strong password."
-                       onChange={this._onPasswordChange} />
-
-                <Input ref="password_repeat" name="password_repeat" id="password_repeat" type="password" maxLength={100}
-                       labelClassName="col-sm-3" wrapperClassName="col-sm-9"
-                       label="Repeat Password" required minLength="6" onChange={this._onPasswordChange} />
-
-                <div className="form-group">
-                  <Col smOffset={3} sm={9}>
-                    <Button bsStyle="success" type="submit">
-                      Update Password
-                    </Button>
-                  </Col>
-                </div>
-              </form>
-            }
-          </Col>
-        </Row>
         <IfPermitted permissions="users:rolesedit">
           <EditRolesForm user={this.props.user} />
         </IfPermitted>

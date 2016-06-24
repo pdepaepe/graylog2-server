@@ -230,6 +230,7 @@ public class RestPermissions implements PluginPermissions {
             MESSAGES_READ,
             METRICS_READ,
             SYSTEM_READ,
+	    JVMSTATS_READ,
             THROUGHPUT_READ,
             USERS_TOKENCREATE,
             USERS_TOKENLIST,

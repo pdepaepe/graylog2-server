@@ -380,13 +380,13 @@ const SearchBar = React.createClass({
                     </div>
                     <div className="col-md-6">
 			<div className="saved-searches-selector-container pull-right"
--                           style={{ display: 'inline-flex', marginRight: 5 }}>
--                        {this.props.displayRefreshControls &&
--                        <div style={{ marginRight: 5 }}>
--                          <RefreshControls />
--                        </div>
--                        }
--                      </div>
+                           style={{ display: 'inline-flex', marginRight: 5 }}>
+                        {this.props.displayRefreshControls &&
+                        <div style={{ marginRight: 5 }}>
+                          <RefreshControls />
+                        </div>
+                        }
+                      </div>
                     </div>
                   </div>
                 </div>

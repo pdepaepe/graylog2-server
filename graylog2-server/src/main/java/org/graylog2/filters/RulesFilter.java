@@ -49,7 +49,7 @@ public class RulesFilter implements MessageFilter {
 
         currentFilterSet = Sets.newHashSet();
         cache = CacheBuilder.newBuilder()
-                .expireAfterWrite(1, TimeUnit.SECONDS)
+                .expireAfterWrite(1, TimeUnit.MINUTES)
                 .build();
         privateSession = rulesEngine.createPrivateSession();
     }

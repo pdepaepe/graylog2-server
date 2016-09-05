@@ -184,7 +184,7 @@ public class Deflector { // extends Ablenkblech
             // waiting 30 seconds to perform the background task should completely get rid of these errors.
             final SystemJob setIndexReadOnlyAndCalculateRangeJob = setIndexReadOnlyAndCalculateRangeJobFactory.create(oldTarget);
             try {
-                systemJobManager.submitWithDelay(setIndexReadOnlyAndCalculateRangeJob, 30, TimeUnit.SECONDS);
+                systemJobManager.submitWithDelay(setIndexReadOnlyAndCalculateRangeJob, 15, TimeUnit.MINUTES);
             } catch (SystemJobConcurrencyException e) {
                 LOG.error("Cannot set index <" + oldTarget + "> to read only and calculate its range. It won't be optimized.", e);
             }

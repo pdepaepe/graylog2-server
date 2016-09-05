@@ -47,6 +47,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -78,10 +79,10 @@ public class UserServiceImpl extends PersistedServiceImpl implements UserService
     @Nullable
     public User load(final String username) {
         LOG.debug("Loading user {}", username);
-	final String lowercaseUsername = username.toLowerCase().trim();
+	final String lowercaseUsername = username.toLowerCase(Locale.ENGLISH).trim();
 
         // special case for the locally defined user, we don't store that in MongoDB.
-	if (configuration.getRootUsername().toLowerCase().equals(lowercaseUsername)) {
+	if (configuration.getRootUsername().toLowerCase(Locale.ENGLISH).equals(lowercaseUsername)) {
             LOG.debug("User {} is the built-in admin user", lowercaseUsername);
             return userFactory.createLocalAdminUser(roleService.getAdminRoleObjectId());
         }

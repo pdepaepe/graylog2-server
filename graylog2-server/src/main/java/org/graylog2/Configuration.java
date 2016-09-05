@@ -92,6 +92,9 @@ public class Configuration extends BaseConfiguration {
 
     @Parameter(value = "root_email")
     private String rootEmail = "";
+ 
+    @Parameter(value = "custom_username")
+    private String customUsername = "Username";
 
     @Parameter(value = "allow_leading_wildcard_searches")
     private boolean allowLeadingWildcardSearches = false;
@@ -228,6 +231,10 @@ public class Configuration extends BaseConfiguration {
 
     public String getRootEmail() {
         return rootEmail;
+    }
+
+    public String getCustomUsername() {
+    	return customUsername;
     }
 
     public boolean isAllowLeadingWildcardSearches() {

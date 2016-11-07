@@ -427,9 +427,6 @@ const SearchBar = React.createClass({
                           <RefreshControls />
                         </div>
                         }
-                        <div style={{ width: 270 }}>
-                          {this._getSavedSearchesSelector()}
-                        </div>
                       </div>
                     </div>
                   </div>

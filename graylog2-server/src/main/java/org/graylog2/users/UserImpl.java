@@ -148,9 +148,7 @@ public class UserImpl extends PersistedImpl implements User {
     }
 
     @Override
-    public void setName(final String username) {
-        fields.put(USERNAME, username);
-    }
+    public void setName(final String username) {fields.put(USERNAME, username.toLowerCase().trim());}
 
     @Override
     public String getEmail() {

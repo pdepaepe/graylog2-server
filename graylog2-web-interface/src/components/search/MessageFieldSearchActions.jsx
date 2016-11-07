@@ -31,12 +31,6 @@ const MessageFieldSearchActions = React.createClass({
                      key={1}
                      onClick={this.props.onAddFieldToSearchBar}
                      id={`more-actions-dropdown-field-${this.props.fieldName}`}>
-          <li className="dropdown-submenu left-submenu">
-            <a href="#">Create extractor for field {this.props.fieldName}</a>
-            <ul className="dropdown-menu">
-              {ExtractorUtils.EXTRACTOR_TYPES.map(extractorType => this._formatExtractorMenuItem(extractorType))}
-            </ul>
-          </li>
           <MenuItem onSelect={this.props.onLoadTerms(this.props.fieldName)}>Show terms of {this.props.fieldName}</MenuItem>
         </SplitButton>
       </div>

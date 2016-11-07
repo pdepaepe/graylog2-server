@@ -245,7 +245,8 @@ public class RestPermissions implements PluginPermissions {
         CLUSTER_CONFIG_ENTRY_READ,
         DECORATORS_READ,
         DECORATORS_CREATE,
-        DECORATORS_EDIT
+        DECORATORS_EDIT,
+        MESSAGES_ANALYZE
     ).build();
 
     protected static final Set<Permission> READER_BASE_PERMISSIONS = PERMISSIONS.stream()

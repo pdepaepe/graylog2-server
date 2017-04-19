@@ -94,7 +94,7 @@ public class DecoratorResource extends RestResource {
     public Decorator create(@ApiParam(name = "JSON body", required = true) DecoratorImpl decorator) {
         checkPermission(RestPermissions.DECORATORS_CREATE);
         if (decorator.stream().isPresent()) {
-            checkPermission(RestPermissions.STREAMS_EDIT, decorator.stream().get());
+            checkPermission(RestPermissions.STREAMS_READ, decorator.stream().get());
         }
         return this.decoratorService.save(decorator);
     }
@@ -109,7 +109,7 @@ public class DecoratorResource extends RestResource {
         final Decorator decorator = this.decoratorService.findById(decoratorId);
 
         if (decorator.stream().isPresent()) {
-            checkPermission(RestPermissions.STREAMS_EDIT, decorator.stream().get());
+            checkPermission(RestPermissions.STREAMS_READ, decorator.stream().get());
         }
         this.decoratorService.delete(decoratorId);
     }
@@ -124,7 +124,7 @@ public class DecoratorResource extends RestResource {
         final Decorator originalDecorator = decoratorService.findById(decoratorId);
         checkPermission(RestPermissions.DECORATORS_CREATE);
         if (originalDecorator.stream().isPresent()) {
-            checkPermission(RestPermissions.STREAMS_EDIT, originalDecorator.stream().get());
+            checkPermission(RestPermissions.STREAMS_READ, originalDecorator.stream().get());
         }
         return this.decoratorService.save(decorator.toBuilder().id(originalDecorator.id()).build());
     }

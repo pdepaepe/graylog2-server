@@ -10,6 +10,7 @@ import StoreProvider from 'injection/StoreProvider';
 const SessionStore = StoreProvider.getStore('Session');
 import ActionsProvider from 'injection/ActionsProvider';
 const SessionActions = ActionsProvider.getActions('Session');
+import AppConfig from 'util/AppConfig';
 
 import disconnectedStyle from '!style/useable!css!less!stylesheets/disconnected.less';
 import authStyle from '!style/useable!css!less!stylesheets/auth.less';

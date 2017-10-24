@@ -89,7 +89,7 @@ public class DashboardsResource extends RestResource {
     @POST
     @Timed
     @ApiOperation(value = "Create a dashboard")
-    @RequiresPermissions(RestPermissions.DASHBOARDS_CREATE)
+    @RequiresPermissions(RestPermissions.BUFFERS_READ)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @AuditEvent(type = AuditEventTypes.DASHBOARD_CREATE)
@@ -146,7 +146,7 @@ public class DashboardsResource extends RestResource {
     @AuditEvent(type = AuditEventTypes.DASHBOARD_DELETE)
     public void delete(@ApiParam(name = "dashboardId", required = true)
                        @PathParam("dashboardId") String dashboardId) throws NotFoundException {
-        checkPermission(RestPermissions.DASHBOARDS_EDIT, dashboardId);
+        checkPermission(RestPermissions.BUFFERS_READ);
 
         final Dashboard dashboard = dashboardService.load(dashboardId);
         dashboard.getWidgets().values().forEach((widget) -> this.clusterEventBus.post(WidgetUpdatedEvent.create(widget)));
@@ -171,7 +171,7 @@ public class DashboardsResource extends RestResource {
     public void update(@ApiParam(name = "dashboardId", required = true)
                        @PathParam("dashboardId") String dashboardId,
                        @ApiParam(name = "JSON body", required = true) UpdateDashboardRequest cr) throws ValidationException, NotFoundException {
-        checkPermission(RestPermissions.DASHBOARDS_EDIT, dashboardId);
+        checkPermission(RestPermissions.BUFFERS_READ);
 
         final Dashboard dashboard = dashboardService.load(dashboardId);
         if (cr.title() != null) {

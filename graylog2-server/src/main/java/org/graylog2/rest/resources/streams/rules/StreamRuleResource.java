@@ -170,7 +170,7 @@ public class StreamRuleResource extends RestResource {
     @Produces(MediaType.APPLICATION_JSON)
     public StreamRuleListResponse get(@ApiParam(name = "streamid", value = "The id of the stream whose stream rules we want.", required = true)
                                       @PathParam("streamid") String streamid) throws NotFoundException {
-        checkPermission(RestPermissions.STREAMS_READ, streamid);
+        checkPermission(RestPermissions.STREAMS_EDIT, streamid);
 
         final Stream stream = streamService.load(streamid);
         final List<StreamRule> streamRules = streamRuleService.loadForStream(stream);
@@ -185,7 +185,7 @@ public class StreamRuleResource extends RestResource {
     @Produces(MediaType.APPLICATION_JSON)
     public StreamRule get(@ApiParam(name = "streamid", value = "The id of the stream whose stream rule we want.", required = true) @PathParam("streamid") String streamid,
                           @ApiParam(name = "streamRuleId", value = "The stream rule id we are getting", required = true) @PathParam("streamRuleId") String streamRuleId) throws NotFoundException {
-        checkPermission(RestPermissions.STREAMS_READ, streamid);
+        checkPermission(RestPermissions.STREAMS_EDIT, streamid);
 
         return streamRuleService.load(streamRuleId);
     }

@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import StreamThroughput from './StreamThroughput';
 import StreamControls from './StreamControls';
 import StreamStateBadge from './StreamStateBadge';
-import CollapsibleStreamRuleList from 'components/streamrules/CollapsibleStreamRuleList';
 import PermissionsMixin from 'util/PermissionsMixin';
 
 import StoreProvider from 'injection/StoreProvider';
@@ -151,11 +150,6 @@ const Stream = React.createClass({
     const createdFromContentPack = (stream.content_pack ?
       <i className="fa fa-cube" title="Created from content pack" /> : null);
 
-    const streamRuleList = isDefaultStream ? null :
-                           (<CollapsibleStreamRuleList key={`streamRules-${stream.id}`}
-                                 stream={stream}
-                                 streamRuleTypes={this.props.streamRuleTypes}
-                                 permissions={this.props.permissions} />);
     const streamControls = (
       <OverlayElement overlay={defaultStreamTooltip} placement="top" useOverlay={isDefaultStream}>
         <StreamControls stream={stream} permissions={this.props.permissions}

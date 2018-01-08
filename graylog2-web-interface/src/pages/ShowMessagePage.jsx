@@ -7,7 +7,6 @@ import { DocumentTitle, Spinner } from 'components/common';
 
 import ActionsProvider from 'injection/ActionsProvider';
 const NodesActions = ActionsProvider.getActions('Nodes');
-const InputsActions = ActionsProvider.getActions('Inputs');
 const MessagesActions = ActionsProvider.getActions('Messages');
 
 import StoreProvider from 'injection/StoreProvider';
@@ -33,7 +32,6 @@ const ShowMessagePage = React.createClass({
   componentDidMount() {
     MessagesActions.loadMessage.triggerPromise(this.props.params.index, this.props.params.messageId).then((message) => {
       this.setState({ message: message });
-      InputsActions.getOptional.triggerPromise(message.source_input_id);
     });
     StreamsStore.listStreams().then((streams) => {
       const streamsMap = {};
@@ -46,7 +44,6 @@ const ShowMessagePage = React.createClass({
   },
   _formatInput(state) {
     const input = {};
-    input[state.input.id] = state.input;
     this.setState({ inputs: Immutable.Map(input) });
   },
   _isLoaded() {

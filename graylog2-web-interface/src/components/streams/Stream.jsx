@@ -3,7 +3,6 @@ import React from 'react';
 import StreamThroughput from './StreamThroughput';
 import StreamControls from './StreamControls';
 import StreamStateBadge from './StreamStateBadge';
-import CollapsibleStreamRuleList from 'components/streamrules/CollapsibleStreamRuleList';
 import PermissionsMixin from 'util/PermissionsMixin';
 
 import StoreProvider from 'injection/StoreProvider';
@@ -37,28 +36,6 @@ const Stream = React.createClass({
     };
   },
 
-  _formatNumberOfStreamRules(stream) {
-    if (stream.is_default) {
-      return 'The default stream contains all messages.';
-    }
-    if (stream.rules.length === 0) {
-      return 'No configured rules.';
-    }
-
-    let verbalMatchingType;
-    switch (stream.matching_type) {
-      case 'OR': verbalMatchingType = 'at least one'; break;
-      default:
-      case 'AND': verbalMatchingType = 'all'; break;
-    }
-
-    return (
-      <span>
-        Must match {verbalMatchingType} of the {stream.rules.length} configured stream{' '}
-        <Pluralize value={stream.rules.length} plural="rules" singular="rule" />.
-      </span>
-    );
-  },
   _onDelete(stream) {
     if (window.confirm('Do you really want to remove this stream?')) {
       StreamsStore.remove(stream.id, (response) => {
@@ -152,11 +129,6 @@ const Stream = React.createClass({
     const createdFromContentPack = (stream.content_pack ?
       <i className="fa fa-cube" title="Created from content pack" /> : null);
 
-    const streamRuleList = isDefaultStream ? null :
-                           (<CollapsibleStreamRuleList key={`streamRules-${stream.id}`}
-                                 stream={stream}
-                                 streamRuleTypes={this.props.streamRuleTypes}
-                                 permissions={this.props.permissions} />);
     const streamControls = (
       <OverlayElement overlay={defaultStreamTooltip} placement="top" useOverlay={isDefaultStream}>
         <StreamControls stream={stream} permissions={this.props.permissions}
@@ -198,8 +170,7 @@ const Stream = React.createClass({
             {stream.description}
           </div>
           <div className="stream-metadata">
-            <StreamThroughput streamId={stream.id} />. {this._formatNumberOfStreamRules(stream)}
-            {streamRuleList}
+            <StreamThroughput streamId={stream.id} />. 
           </div>
         </div>
         <StreamRuleForm ref="quickAddStreamRuleForm" title="New Stream Rule"

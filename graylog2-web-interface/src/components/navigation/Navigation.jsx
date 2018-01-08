@@ -190,9 +190,11 @@ const Navigation = React.createClass({
                 <MenuItem>Configurations</MenuItem>
               </LinkContainer>
               }
+              {this.isPermitted(this.props.permissions, ['buffers:read']) &&
               <LinkContainer to={Routes.SYSTEM.NODES.LIST}>
                 <MenuItem>Nodes</MenuItem>
               </LinkContainer>
+              }
               {this.isPermitted(this.props.permissions, ['inputs:read']) &&
               <LinkContainer to={Routes.SYSTEM.INPUTS}>
                 <MenuItem>Inputs</MenuItem>

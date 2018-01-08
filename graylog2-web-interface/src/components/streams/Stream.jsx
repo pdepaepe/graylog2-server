@@ -170,7 +170,7 @@ const Stream = React.createClass({
             {stream.description}
           </div>
           <div className="stream-metadata">
-            <StreamThroughput streamId={stream.id} />. 
+            <StreamThroughput streamId={stream.id} />.
           </div>
         </div>
         <StreamRuleForm ref="quickAddStreamRuleForm" title="New Stream Rule"

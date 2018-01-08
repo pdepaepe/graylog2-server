@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -150,7 +151,7 @@ public class UserImpl extends PersistedImpl implements User {
 
     @Override
     public void setName(final String username) {
-        fields.put(USERNAME, username);
+        fields.put(USERNAME, username.toLowerCase(Locale.ENGLISH).trim());
     }
 
     @Override

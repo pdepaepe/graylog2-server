@@ -12,7 +12,6 @@ const MessagesActions = ActionsProvider.getActions('Messages');
 import StoreProvider from 'injection/StoreProvider';
 const NodesStore = StoreProvider.getStore('Nodes');
 const StreamsStore = StoreProvider.getStore('Streams');
-const InputsStore = StoreProvider.getStore('Inputs');
 // eslint-disable-next-line no-unused-vars
 const MessagesStore = StoreProvider.getStore('Messages');
 
@@ -21,11 +20,10 @@ const ShowMessagePage = React.createClass({
     params: PropTypes.object,
     searchConfig: PropTypes.object.isRequired,
   },
-  mixins: [Reflux.connect(NodesStore), Reflux.listenTo(InputsStore, '_formatInput')],
+  mixins: [Reflux.connect(NodesStore)],
   getInitialState() {
     return {
       streams: undefined,
-      inputs: undefined,
       message: undefined,
     };
   },
@@ -42,18 +40,14 @@ const ShowMessagePage = React.createClass({
     });
     NodesActions.list.triggerPromise();
   },
-  _formatInput(state) {
-    const input = {};
-    this.setState({ inputs: Immutable.Map(input) });
-  },
   _isLoaded() {
-    return this.state.message && this.state.streams && this.state.nodes && this.state.inputs;
+    return this.state.message && this.state.streams && this.state.nodes;
   },
   render() {
     if (this._isLoaded()) {
       return (
         <DocumentTitle title={`Message ${this.props.params.messageId} on ${this.props.params.index}`}>
-          <MessageShow message={this.state.message} inputs={this.state.inputs} nodes={Immutable.Map(this.state.nodes)}
+          <MessageShow message={this.state.message} inputs={Immutable.Map()} nodes={Immutable.Map(this.state.nodes)}
                        streams={this.state.streams} allStreamsLoaded searchConfig={this.props.searchConfig} />
         </DocumentTitle>
       );

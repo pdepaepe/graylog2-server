@@ -13,14 +13,7 @@ const HelpMenu = React.createClass({
   },
   render() {
     return (
-      <NavDropdown title="Help" id="help-menu-dropdown" active={this.props.active}>
-        <LinkContainer to={Routes.getting_started(true)}>
-          <MenuItem>Getting Started</MenuItem>
-        </LinkContainer>
-        <MenuItem href={DocsHelper.versionedDocsHomePage()} target="_blank">
-          <ExternalLink>Documentation</ExternalLink>
-        </MenuItem>
-      </NavDropdown>
+      <span></span>
     );
   },
 });

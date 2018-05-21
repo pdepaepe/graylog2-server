@@ -102,10 +102,6 @@ const ServerUnavailablePage = React.createClass({
                 Please verify that the server is healthy and working correctly.
               </p>
               <p>You will be automatically redirected to the previous page once we can connect to the server.</p>
-              <p>
-                Do you need a hand?{' '}
-                <a href="https://www.graylog.org/community-support" target="_blank">We can help you</a>.
-              </p>
               <div>
                 <a href="#" onClick={this._toggleDetails}>
                   {this.state.showDetails ? 'Less details' : 'More details'}

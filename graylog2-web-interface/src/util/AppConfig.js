@@ -17,6 +17,10 @@ const AppConfig = {
     return this.appConfig().rootTimeZone;
   },
 
+  customUsername() {
+    return window.appConfig.customUsername;
+  },
+
   appConfig() {
     return window.appConfig || {};
   },

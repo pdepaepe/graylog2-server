@@ -10,6 +10,7 @@ import StoreProvider from 'injection/StoreProvider';
 const SessionStore = StoreProvider.getStore('Session');
 import ActionsProvider from 'injection/ActionsProvider';
 const SessionActions = ActionsProvider.getActions('Session');
+import AppConfig from 'util/AppConfig';
 
 import disconnectedStyle from '!style/useable!css!less!stylesheets/disconnected.less';
 import authStyle from '!style/useable!css!less!stylesheets/auth.less';
@@ -87,7 +88,7 @@ const LoginPage = React.createClass({
 
                 {alert}
 
-                <Input ref="username" type="text" placeholder="Username" autoFocus />
+                <Input ref="username" type="text" placeholder={AppConfig.customUsername()} autoFocus />
 
                 <Input ref="password" type="password" placeholder="Password" />
 

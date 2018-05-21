@@ -364,19 +364,6 @@ const SearchBar = React.createClass({
     return selector;
   },
 
-  _getSavedSearchesSelector() {
-    const formattedSavedSearches = this.props.savedSearches
-      .sort((searchA, searchB) => searchA.title.toLowerCase().localeCompare(searchB.title.toLowerCase()))
-      .map((savedSearch) => {
-        return { value: savedSearch.id, label: savedSearch.title };
-      });
-
-    return (
-      <Select placeholder="Saved searches" options={formattedSavedSearches} value={this.state.savedSearch}
-              onChange={this._onSavedSearchSelect} size="small" />
-    );
-  },
-
   render() {
     return (
       <div className="row no-bm">
@@ -427,9 +414,6 @@ const SearchBar = React.createClass({
                           <RefreshControls />
                         </div>
                         }
-                        <div style={{ width: 270 }}>
-                          {this._getSavedSearchesSelector()}
-                        </div>
                       </div>
                     </div>
                   </div>

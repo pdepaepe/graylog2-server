@@ -47,6 +47,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -78,15 +79,15 @@ public class UserServiceImpl extends PersistedServiceImpl implements UserService
     @Nullable
     public User load(final String username) {
         LOG.debug("Loading user {}", username);
-
+        final String lowercaseUsername = username.toLowerCase(Locale.ENGLISH).trim();
         // special case for the locally defined user, we don't store that in MongoDB.
-        if (configuration.getRootUsername().equals(username)) {
-            LOG.debug("User {} is the built-in admin user", username);
+        if (configuration.getRootUsername().toLowerCase(Locale.ENGLISH).equals(lowercaseUsername)) {
+            LOG.debug("User {} is the built-in admin user", lowercaseUsername);
             return userFactory.createLocalAdminUser(roleService.getAdminRoleObjectId());
         }
 
         final DBObject query = new BasicDBObject();
-        query.put(UserImpl.USERNAME, username);
+        query.put(UserImpl.USERNAME, lowercaseUsername);
 
         final List<DBObject> result = query(UserImpl.class, query);
         if (result == null || result.isEmpty()) {
@@ -94,7 +95,7 @@ public class UserServiceImpl extends PersistedServiceImpl implements UserService
         }
 
         if (result.size() > 1) {
-            final String msg = "There was more than one matching user for username " + username + ". This should never happen.";
+            final String msg = "There was more than one matching user for username " + lowercaseUsername + ". This should never happen.";
             LOG.error(msg);
             throw new RuntimeException(msg);
         }

@@ -164,14 +164,6 @@ const FieldAnalyzersSidebar = React.createClass({
           </ul>
         </div>
         <div ref="footer" style={{ marginTop: 13, marginBottom: 0 }}>
-          List{' '}
-          <span className="message-result-fields-range"> fields of&nbsp;
-            <a href="#" style={{ fontWeight: this.props.showAllFields ? 'normal' : 'bold' }}
-               onClick={this._showPageFields}>current page</a> or{' '}
-            <a href="#" style={{ fontWeight: this.props.showAllFields ? 'bold' : 'normal' }}
-               onClick={this._showAllFields}>all fields</a>.
-          </span>
-          <br />
           {shouldHighlightToggle}
         </div>
       </div>

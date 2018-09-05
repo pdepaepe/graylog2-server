@@ -69,12 +69,14 @@ import java.util.concurrent.atomic.AtomicLong;
 import static com.codahale.metrics.MetricRegistry.name;
 
 public class KafkaTransport extends ThrottleableTransport {
-    public static final String GROUP_ID = "graylog2";
+
     public static final String CK_FETCH_MIN_BYTES = "fetch_min_bytes";
     public static final String CK_FETCH_WAIT_MAX = "fetch_wait_max";
     public static final String CK_ZOOKEEPER = "zookeeper";
     public static final String CK_TOPIC_FILTER = "topic_filter";
     public static final String CK_THREADS = "threads";
+    public static final String CK_GROUP_ID = "group_id";
+    public static final String DEFAULT_GROUP_ID = "graylog2";
 
     private static final Logger LOG = LoggerFactory.getLogger(KafkaTransport.class);
 
@@ -173,7 +175,7 @@ public class KafkaTransport extends ThrottleableTransport {
 
         final Properties props = new Properties();
 
-        props.put("group.id", GROUP_ID);
+        props.put("group.id", configuration.getString(CK_GROUP_ID, DEFAULT_GROUP_ID));
         props.put("client.id", "gl2-" + nodeId + "-" + input.getId());
 
         props.put("fetch.min.bytes", String.valueOf(configuration.getInt(CK_FETCH_MIN_BYTES)));
@@ -354,6 +356,13 @@ public class KafkaTransport extends ThrottleableTransport {
                     2,
                     "Number of processor threads to spawn. Use one thread per Kafka topic partition.",
                     ConfigurationField.Optional.NOT_OPTIONAL));
+
+            cr.addField(new TextField(
+                    CK_GROUP_ID,
+                    "Consumer group id",
+                    DEFAULT_GROUP_ID,
+                    "Name of the consumer group the Kafka input belongs to",
+                    ConfigurationField.Optional.OPTIONAL));
 
             return cr;
         }

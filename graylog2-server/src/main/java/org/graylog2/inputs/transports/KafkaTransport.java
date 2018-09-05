@@ -79,7 +79,7 @@ public class KafkaTransport extends ThrottleableTransport {
     public static final String CK_TOPIC_FILTER = "topic_filter";
     public static final String CK_THREADS = "threads";
     public static final String CK_OFFSET_RESET = "offset_reset";
-    public static final String CK_GROUP_ID = "graylog2";
+    public static final String CK_GROUP_ID = "group_id";
 
     // See https://kafka.apache.org/090/documentation.html for available values for "auto.offset.reset".
     private static final Map<String, String> OFFSET_RESET_VALUES = ImmutableMap.of(

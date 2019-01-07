@@ -250,23 +250,19 @@ public class RestPermissions implements PluginPermissions {
 
     // Standard set of PERMISSIONS of readers.
     protected static final Set<String> READER_BASE_PERMISSION_SELECTION = ImmutableSet.<String>builder().add(
-        BUFFERS_READ,
-        CLUSTER_CONFIG_ENTRY_READ,
-        DECORATORS_READ,
-        FIELDNAMES_READ,
         INDEXERCLUSTER_READ,
-        INPUTS_READ,
-        JOURNAL_READ,
-        JVMSTATS_READ,
+        FIELDNAMES_READ,
         MESSAGECOUNT_READ,
-        MESSAGES_ANALYZE,
         MESSAGES_READ,
         METRICS_READ,
-        SAVEDSEARCHES_CREATE,
-        SAVEDSEARCHES_EDIT,
-        SAVEDSEARCHES_READ,
         SYSTEM_READ,
-        THROUGHPUT_READ
+        JVMSTATS_READ,
+        THROUGHPUT_READ,
+        CLUSTER_CONFIG_ENTRY_READ,
+        DECORATORS_READ,
+        DECORATORS_CREATE,
+        DECORATORS_EDIT,
+        MESSAGES_ANALYZE
     ).build();
 
     protected static final Set<Permission> READER_BASE_PERMISSIONS = PERMISSIONS.stream()

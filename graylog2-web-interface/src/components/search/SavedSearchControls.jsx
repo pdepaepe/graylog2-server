@@ -76,36 +76,16 @@ const SavedSearchControls = React.createClass({
     this.setState({ error: !SavedSearchesStore.isValidTitle(this.props.currentSavedSearch, this.refs.title.getValue()) });
   },
   _getNewSavedSearchButtons() {
-    return <Button bsStyle="success" bsSize="small" onClick={this._openModal}>Save search criteria</Button>;
+    return <span></span>;
   },
   _getEditSavedSearchControls() {
     return (
-      <DropdownButton bsSize="small" title="Saved search" id="saved-search-actions-dropdown" pullRight={this.props.pullRight}>
-        <MenuItem onSelect={this._openModal}>Update search criteria</MenuItem>
-        <MenuItem divider />
-        <MenuItem onSelect={this._deleteSavedSearch}>Delete saved search</MenuItem>
-      </DropdownButton>
+      <span></span>
     );
   },
   render() {
     return (
-      <div style={{ display: 'inline-block' }}>
-        {this._isSearchSaved() ? this._getEditSavedSearchControls() : this._getNewSavedSearchButtons()}
-        <BootstrapModalForm ref="saveSearchModal"
-                            title={this._isSearchSaved() ? 'Update saved search' : 'Save search criteria'}
-                            onSubmitForm={this._save}
-                            submitButtonText="Save">
-          <Input type="text"
-                 label="Title"
-                 ref="title"
-                 required
-                 defaultValue={this.state.title}
-                 onChange={this._titleChanged}
-                 bsStyle={this.state.error ? 'error' : null}
-                 help={this.state.error ? 'Title was already taken.' : 'Type a name describing the current search.'}
-                 autoFocus />
-        </BootstrapModalForm>
-      </div>
+      <span></span>
     );
   },
 });

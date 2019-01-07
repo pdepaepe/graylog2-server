@@ -39,13 +39,8 @@ const Dashboard = React.createClass({
     if (this.isPermitted(this.props.permissions, [`dashboards:edit:${this.props.dashboard.id}`])) {
       dashboardActions = (
         <div className="stream-actions">
-          <EditDashboardModalTrigger id={this.props.dashboard.id} action="edit" title={this.props.dashboard.title}
-                                     description={this.props.dashboard.description} buttonClass="btn-info" />
-          &nbsp;
           <DropdownButton title="More actions" pullRight id={`more-actions-dropdown-${this.props.dashboard.id}`}>
             {setAsStartpageMenuItem}
-            <MenuItem divider />
-            <MenuItem onSelect={this._onDashboardDelete}>Delete this dashboard</MenuItem>
           </DropdownButton>
         </div>
       );

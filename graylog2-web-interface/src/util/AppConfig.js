@@ -20,6 +20,10 @@ const AppConfig = {
   appConfig() {
     return window.appConfig || {};
   },
+
+  customUsername() {
+    return window.appConfig.customUsername;
+  },
 };
 
 export default AppConfig;

@@ -27,7 +27,6 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.common.util.concurrent.Uninterruptibles;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import kafka.consumer.ConsumerTimeoutException;
 import kafka.utils.ZKStringSerializer$;
 import kafka.utils.ZkUtils;
 import org.I0Itec.zkclient.ZkClient;
@@ -303,9 +302,6 @@ public class KafkaTransport extends ThrottleableTransport {
                             input.processRawMessage(rawMessage);
                         }
 
-                    } catch (ConsumerTimeoutException e) {
-                        // Happens when there is nothing to consume, retry to check again.
-                        retry = true;
                     } catch (Exception e) {
                         LOG.error("Kafka consumer error, stopping consumer thread.", e);
                     }

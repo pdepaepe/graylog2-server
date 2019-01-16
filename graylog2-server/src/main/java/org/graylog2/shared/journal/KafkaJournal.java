@@ -29,27 +29,11 @@ import com.google.common.primitives.Ints;
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.google.common.util.concurrent.Uninterruptibles;
 import kafka.common.KafkaException;
-import kafka.log.CleanerConfig;
-import kafka.log.Log;
-import kafka.log.LogAppendInfo;
-import kafka.log.LogConfig;
-import kafka.log.LogManager;
-import kafka.log.LogSegment;
-
-
-
-
-import kafka.server.BrokerState;
-import kafka.server.BrokerTopicStats;
-import kafka.server.LogDirFailureChannel;
-import kafka.server.RunningAsBroker;
-import kafka.server.FetchDataInfo;
+import kafka.log.*;
+import kafka.server.*;
 import kafka.utils.KafkaScheduler;
-
 import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.record.MemoryRecords;
-import org.apache.kafka.common.record.Record;
-import org.apache.kafka.common.requests.IsolationLevel;
+import org.apache.kafka.common.record.*;
 import org.apache.kafka.common.utils.Time;
 import org.graylog2.plugin.GlobalMetricNames;
 import org.graylog2.plugin.ServerStatus;
@@ -62,35 +46,19 @@ import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
-import scala.Predef;
-import scala.collection.JavaConverters;
+import scala.collection.JavaConversions;
 import scala.collection.Seq;
 import scala.collection.immutable.HashMap;
-import scala.collection.JavaConversions;
-import scala.math.Ordering;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.SyncFailedException;
-import java.io.UncheckedIOException;
+import java.io.*;
 import java.nio.channels.ClosedByInterruptException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -99,11 +67,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.codahale.metrics.MetricRegistry.name;
-import static java.util.concurrent.TimeUnit.DAYS;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.MINUTES;
-import static java.util.concurrent.TimeUnit.NANOSECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.concurrent.TimeUnit.*;
 import static org.graylog2.plugin.Tools.bytesToHex;
 
 @Singleton
@@ -438,18 +402,21 @@ public class KafkaJournal extends AbstractIdleService implements Journal {
             long messageSetSize = 0L;
             long lastWriteOffset = 0L;
 
-            final List<Message> messages = new ArrayList<>(entries.size());
+            final byte magicByte = 2;
+
+            final List<SimpleRecord> messages = new ArrayList<>(entries.size());
             for (final Entry entry : entries) {
                 final byte[] messageBytes = entry.getMessageBytes();
                 final byte[] idBytes = entry.getIdBytes();
 
                 payloadSize += messageBytes.length;
 
-                byte magicByte = 1;
-                final Message newMessage = new Message(messageBytes, idBytes, payloadSize, magicByte);
+                //final SimpleRecord newMessage = new SimpleRecord(System.currentTimeMillis(), messageBytes, idBytes, payloadSize, magicByte);
+
+                final SimpleRecord newMessage = new SimpleRecord(idBytes, messageBytes);
 
                 // Calculate the size of the new message in the message set by including the overhead for the log entry.
-                final int newMessageSize = MessageSet.entrySize(newMessage);
+                final int newMessageSize = AbstractRecords.estimateSizeInBytes(magicByte, CompressionType.ZSTD, Arrays.asList(newMessage));
 
                 if (newMessageSize > maxMessageSize) {
                     writeDiscardedMessages.mark();
@@ -489,27 +456,27 @@ public class KafkaJournal extends AbstractIdleService implements Journal {
         }
     }
 
-    private long flushMessages(List<Message> messages, long payloadSize) {
+    private long flushMessages(List<SimpleRecord> messages, long payloadSize) {
         if (messages.isEmpty()) {
             LOG.debug("No messages to flush, not trying to write an empty message set.");
             return -1L;
         }
 
-        final ByteBufferMessageSet messageSet = new ByteBufferMessageSet(JavaConversions.asScalaBuffer(messages).toSeq());
+        //final ByteBufferMessageSet messageSet = new ByteBufferMessageSet(JavaConversions.asScalaBuffer(messages).toSeq())
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Trying to write ByteBufferMessageSet with size of {} bytes to journal", messageSet.sizeInBytes());
+            LOG.debug("Trying to write MemoryRecords with size of {} bytes to journal", AbstractRecords.estimateSizeInBytes((byte)2,CompressionType.ZSTD,messages));
         }
 
-        byte leaderEpoch = messages.get(0).attributes();
-        MemoryRecords mRecs = MemoryRecords.readableRecords(messageSet.buffer());
+        MemoryRecords mRecs = MemoryRecords.withRecords(CompressionType.ZSTD, (SimpleRecord[])messages.toArray());
+        short leaderEpoch = mRecs.batches().iterator().next().producerEpoch();
 
         final LogAppendInfo appendInfo = kafkaLog.appendAsLeader(mRecs,leaderEpoch,true);
         long lastWriteOffset = appendInfo.lastOffset();
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("Wrote {} messages to journal: {} bytes (payload {} bytes), log position {} to {}",
-                messages.size(), messageSet.sizeInBytes(), payloadSize, appendInfo.firstOffset(), lastWriteOffset);
+                messages.size(), AbstractRecords.estimateSizeInBytes((byte)2,CompressionType.ZSTD,messages), payloadSize, appendInfo.firstOffset(), lastWriteOffset);
         }
         writtenMessages.mark(messages.size());
 

@@ -31,32 +31,32 @@ import org.graylog2.plugin.inputs.annotations.FactoryClass;
 import javax.inject.Inject;
 
 public class RawKafkaInput extends MessageInput {
-    private static final String NAME = "Raw/Plaintext Kafka";
+    private static final String NAME = "Raw/Plaintext Kafka 2";
 
     @AssistedInject
     public RawKafkaInput(@Assisted Configuration configuration,
-                         MetricRegistry metricRegistry,
-                         KafkaTransport.Factory transport,
-                         RawCodec.Factory codec,
-                         LocalMetricRegistry localRegistry,
-                         Config config,
-                         Descriptor descriptor, ServerStatus serverStatus) {
+                            MetricRegistry metricRegistry,
+                            KafkaTransport.Factory transport,
+                            RawCodec.Factory codec,
+                            LocalMetricRegistry localRegistry,
+                            Config config,
+                            Descriptor descriptor, ServerStatus serverStatus) {
         this(metricRegistry,
-                configuration,
-                transport.create(configuration),
-                codec.create(configuration),
-                localRegistry,
-                config,
-                descriptor, serverStatus);
+            configuration,
+            transport.create(configuration),
+            codec.create(configuration),
+            localRegistry,
+            config,
+            descriptor, serverStatus);
     }
 
     protected RawKafkaInput(MetricRegistry metricRegistry,
-                            Configuration configuration,
-                            KafkaTransport kafkaTransport,
-                            RawCodec codec,
-                            LocalMetricRegistry localRegistry,
-                            MessageInput.Config config,
-                            MessageInput.Descriptor descriptor, ServerStatus serverStatus) {
+                               Configuration configuration,
+                               KafkaTransport kafkaTransport,
+                               RawCodec codec,
+                               LocalMetricRegistry localRegistry,
+                               MessageInput.Config config,
+                               MessageInput.Descriptor descriptor, ServerStatus serverStatus) {
         super(metricRegistry, configuration, kafkaTransport, localRegistry, codec, config, descriptor, serverStatus);
     }
 

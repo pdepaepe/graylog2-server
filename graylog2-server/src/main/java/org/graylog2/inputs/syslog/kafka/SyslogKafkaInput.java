@@ -31,32 +31,32 @@ import org.graylog2.plugin.inputs.annotations.FactoryClass;
 import javax.inject.Inject;
 
 public class SyslogKafkaInput extends MessageInput {
-    private static final String NAME = "Syslog Kafka";
+    private static final String NAME = "Syslog Kafka 2";
 
     @AssistedInject
     public SyslogKafkaInput(@Assisted Configuration configuration,
-                            MetricRegistry metricRegistry,
-                            KafkaTransport.Factory transport,
-                            SyslogCodec.Factory codec,
-                            LocalMetricRegistry localRegistry,
-                            Config config,
-                            Descriptor descriptor, ServerStatus serverStatus) {
+                               MetricRegistry metricRegistry,
+                               KafkaTransport.Factory transport,
+                               SyslogCodec.Factory codec,
+                               LocalMetricRegistry localRegistry,
+                               Config config,
+                               Descriptor descriptor, ServerStatus serverStatus) {
         this(metricRegistry,
-                configuration,
-                transport.create(configuration),
-                codec.create(configuration),
-                localRegistry,
-                config,
-                descriptor, serverStatus);
+            configuration,
+            transport.create(configuration),
+            codec.create(configuration),
+            localRegistry,
+            config,
+            descriptor, serverStatus);
     }
 
     protected SyslogKafkaInput(MetricRegistry metricRegistry,
-                               Configuration configuration,
-                               KafkaTransport kafkaTransport,
-                               SyslogCodec codec,
-                               LocalMetricRegistry localRegistry,
-                               MessageInput.Config config,
-                               MessageInput.Descriptor descriptor, ServerStatus serverStatus) {
+                                  Configuration configuration,
+                                  KafkaTransport kafkaTransport,
+                                  SyslogCodec codec,
+                                  LocalMetricRegistry localRegistry,
+                                  MessageInput.Config config,
+                                  MessageInput.Descriptor descriptor, ServerStatus serverStatus) {
         super(metricRegistry, configuration, kafkaTransport, localRegistry, codec, config, descriptor, serverStatus);
     }
 

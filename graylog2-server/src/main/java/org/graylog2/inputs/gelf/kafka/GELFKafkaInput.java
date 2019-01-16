@@ -31,32 +31,32 @@ import org.graylog2.plugin.inputs.annotations.FactoryClass;
 import javax.inject.Inject;
 
 public class GELFKafkaInput extends MessageInput {
-    private static final String NAME = "GELF Kafka";
+    private static final String NAME = "GELF Kafka 2";
 
     @AssistedInject
     public GELFKafkaInput(@Assisted Configuration configuration,
-                          MetricRegistry metricRegistry,
-                          KafkaTransport.Factory transport,
-                          GelfCodec.Factory codec,
-                          LocalMetricRegistry localRegistry,
-                          Config config,
-                          Descriptor descriptor, ServerStatus serverStatus) {
+                             MetricRegistry metricRegistry,
+                             KafkaTransport.Factory transport,
+                             GelfCodec.Factory codec,
+                             LocalMetricRegistry localRegistry,
+                             Config config,
+                             Descriptor descriptor, ServerStatus serverStatus) {
         this(metricRegistry,
-                configuration,
-                transport.create(configuration),
-                codec.create(configuration),
-                localRegistry,
-                config,
-                descriptor, serverStatus);
+            configuration,
+            transport.create(configuration),
+            codec.create(configuration),
+            localRegistry,
+            config,
+            descriptor, serverStatus);
     }
 
     protected GELFKafkaInput(MetricRegistry metricRegistry,
-                             Configuration configuration,
-                             KafkaTransport kafkaTransport,
-                             GelfCodec codec,
-                             LocalMetricRegistry localRegistry,
-                             MessageInput.Config config,
-                             MessageInput.Descriptor descriptor, ServerStatus serverStatus) {
+                                Configuration configuration,
+                                KafkaTransport kafkaTransport,
+                                GelfCodec codec,
+                                LocalMetricRegistry localRegistry,
+                                MessageInput.Config config,
+                                MessageInput.Descriptor descriptor, ServerStatus serverStatus) {
         super(metricRegistry, configuration, kafkaTransport, localRegistry, codec, config, descriptor, serverStatus);
     }
 

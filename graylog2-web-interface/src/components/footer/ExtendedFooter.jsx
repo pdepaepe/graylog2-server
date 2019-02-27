@@ -5,7 +5,7 @@ import Version from 'util/Version';
 import StoreProvider from 'injection/StoreProvider';
 const SystemStore = StoreProvider.getStore('System');
 
-const Footer = React.createClass({
+const ExtendedFooter = React.createClass({
   mixins: [Reflux.connect(SystemStore)],
   componentDidMount() {
     SystemStore.jvm().then(jvmInfo => this.setState({ jvm: jvmInfo }));

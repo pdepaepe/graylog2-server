@@ -8,18 +8,13 @@ import { Col, Row } from 'react-bootstrap';
 import { Spinner } from 'components/common';
 import StoreProvider from 'injection/StoreProvider';
 import ActionsProvider from 'injection/ActionsProvider';
-import NumberUtils from 'util/NumberUtils';
 import _ from 'lodash';
 import EventHandlersThrottler from 'util/EventHandlersThrottler';
 
-import TrafficGraph from './TrafficGraph';
-
-const ClusterTrafficStore = StoreProvider.getStore('ClusterTraffic');
-const ClusterTrafficActions = ActionsProvider.getActions('ClusterTraffic');
 const NodesStore = StoreProvider.getStore('Nodes');
 
 const GraylogClusterOverview = React.createClass({
-  mixins: [Reflux.connect(NodesStore, 'nodes'), Reflux.connect(ClusterTrafficStore, 'traffic')],
+  mixins: [Reflux.connect(NodesStore, 'nodes')],
 
   getInitialState() {
     return {
@@ -28,7 +23,6 @@ const GraylogClusterOverview = React.createClass({
   },
 
   componentDidMount() {
-    ClusterTrafficActions.traffic();
     window.addEventListener('resize', this._onResize);
     this._resizeGraphs();
   },
@@ -65,27 +59,11 @@ const GraylogClusterOverview = React.createClass({
         </dl>
       );
     }
-    let sumOutput = null;
-    if (this.state.traffic) {
-      const bytesOut = _.reduce(this.state.traffic.output, (result, value) => result + value);
-      sumOutput = <small>Last 30 days: {NumberUtils.formatBytes(bytesOut)}</small>;
-    }
     return (
       <Row className="content">
         <Col md={12}>
           <h2 style={{ marginBottom: 10 }}>Graylog cluster</h2>
           {content}
-          <hr />
-          <Row>
-            <Col md={12}>
-              <h3 ref={(container) => { this._container = container; }} style={{ marginBottom: 10 }}>Outgoing traffic {sumOutput}</h3>
-              {!this.state.traffic ? <Spinner /> : <TrafficGraph traffic={this.state.traffic.output}
-                                                                 from={this.state.traffic.from}
-                                                                 to={this.state.traffic.to}
-                                                                 width={this.state.graphWidth} />
-              }
-            </Col>
-          </Row>
         </Col>
       </Row>
     );

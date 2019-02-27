@@ -20,11 +20,13 @@ import com.codahale.metrics.annotation.Timed;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog2.shared.rest.resources.RestResource;
 import org.graylog2.system.stats.ClusterStats;
 import org.graylog2.system.stats.ClusterStatsService;
 import org.graylog2.system.stats.elasticsearch.ElasticsearchStats;
 import org.graylog2.system.stats.mongo.MongoStats;
+import org.graylog2.shared.security.RestPermissions;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -35,6 +37,7 @@ import javax.ws.rs.core.MediaType;
 @Api(value = "System/ClusterStats", description = "Cluster stats")
 @RequiresAuthentication
 @Path("/system/cluster/stats")
+@RequiresPermissions(RestPermissions.BUFFERS_READ)
 @Produces(MediaType.APPLICATION_JSON)
 public class ClusterStatsResource extends RestResource {
     private final ClusterStatsService clusterStatsService;

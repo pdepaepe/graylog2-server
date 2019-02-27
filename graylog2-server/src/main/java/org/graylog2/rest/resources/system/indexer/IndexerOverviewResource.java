@@ -23,6 +23,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog2.indexer.IndexSet;
 import org.graylog2.indexer.IndexSetRegistry;
 import org.graylog2.indexer.cluster.Cluster;
@@ -38,6 +39,7 @@ import org.graylog2.rest.resources.count.CountResource;
 import org.graylog2.rest.resources.system.DeflectorResource;
 import org.graylog2.rest.resources.system.IndexRangesResource;
 import org.graylog2.shared.rest.resources.RestResource;
+import org.graylog2.shared.security.RestPermissions;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -54,6 +56,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RequiresAuthentication
+@RequiresPermissions(RestPermissions.BUFFERS_READ)
 @Api(value = "Indexer/Overview", description = "Indexing overview")
 @Path("/system/indexer/overview")
 public class IndexerOverviewResource extends RestResource {

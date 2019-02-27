@@ -65,6 +65,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiresAuthentication
+@RequiresPermissions(RestPermissions.BUFFERS_READ)
 @Api(value = "Indexer/Indices", description = "Index information")
 @Path("/system/indexer/indices")
 public class IndicesResource extends RestResource {

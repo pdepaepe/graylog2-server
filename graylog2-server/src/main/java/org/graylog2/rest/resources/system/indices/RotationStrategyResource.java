@@ -24,12 +24,14 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog2.plugin.cluster.ClusterConfigService;
 import org.graylog2.plugin.indexer.rotation.RotationStrategy;
 import org.graylog2.plugin.indexer.rotation.RotationStrategyConfig;
 import org.graylog2.rest.models.system.indices.RotationStrategies;
 import org.graylog2.rest.models.system.indices.RotationStrategyDescription;
 import org.graylog2.shared.rest.resources.RestResource;
+import org.graylog2.shared.security.RestPermissions;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -66,6 +68,7 @@ public class RotationStrategyResource extends RestResource {
     }
 
     @GET
+    @RequiresPermissions(RestPermissions.BUFFERS_READ)
     @Path("strategies")
     @Timed
     @ApiOperation(value = "List available rotation strategies",
@@ -80,6 +83,7 @@ public class RotationStrategyResource extends RestResource {
     }
 
     @GET
+    @RequiresPermissions(RestPermissions.BUFFERS_READ)
     @Path("strategies/{strategy}")
     @Timed
     @ApiOperation(value = "Show JSON schema for configuration of given rotation strategies",

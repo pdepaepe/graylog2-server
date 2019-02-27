@@ -254,7 +254,6 @@ public class RestPermissions implements PluginPermissions {
         FIELDNAMES_READ,
         MESSAGECOUNT_READ,
         MESSAGES_READ,
-        METRICS_READ,
         SYSTEM_READ,
         THROUGHPUT_READ,
         CLUSTER_CONFIG_ENTRY_READ,

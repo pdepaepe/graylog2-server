@@ -4,7 +4,7 @@ import Reflux from 'reflux';
 import StoreProvider from 'injection/StoreProvider';
 const CurrentUserStore = StoreProvider.getStore('CurrentUser');
 
-import { DocumentTitle, PageHeader } from 'components/common';
+import { DocumentTitle, PageHeader, IfPermitted } from 'components/common';
 import { NodesList } from 'components/nodes';
 
 const NodesPage = React.createClass({
@@ -22,7 +22,9 @@ const NodesPage = React.createClass({
               will be persisted to disk, even when processing is disabled.
             </span>
           </PageHeader>
-          <NodesList permissions={this.state.currentUser.permissions} />
+          <IfPermitted permissions="buffers:read">
+            <NodesList permissions={this.state.currentUser.permissions} />
+          </IfPermitted>
         </div>
       </DocumentTitle>
     );

@@ -21,15 +21,16 @@ import com.google.common.collect.ImmutableSet;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.File;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class JmxFsProbe implements FsProbe {
-    private final Set<File> locations;
+    private final Set<Path> locations;
 
     @Inject
-    public JmxFsProbe(@Named("message_journal_dir") File journalDirectory) {
+    public JmxFsProbe(@Named("message_journal_dir") Path journalDirectory) {
         this.locations = ImmutableSet.of(journalDirectory);
     }
 
@@ -37,11 +38,12 @@ public class JmxFsProbe implements FsProbe {
     public FsStats fsStats() {
         final Map<String, FsStats.Filesystem> filesystems = new HashMap<>(locations.size());
 
-        for (File location : locations) {
-            final String path = location.getAbsolutePath();
-            final long total = location.getTotalSpace();
-            final long free = location.getFreeSpace();
-            final long available = location.getUsableSpace();
+        for (Path location : locations) {
+            final File file = location.toAbsolutePath().toFile();
+            final String path = file.getAbsolutePath();
+            final long total = file.getTotalSpace();
+            final long free = file.getFreeSpace();
+            final long available = file.getUsableSpace();
             final long used = total - free;
             final short usedPercent = (short) ((double) used / total * 100);
 

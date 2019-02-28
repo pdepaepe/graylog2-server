@@ -256,6 +256,7 @@ public class RestPermissions implements PluginPermissions {
         MESSAGES_READ,
         SYSTEM_READ,
         THROUGHPUT_READ,
+        METRICS_READ,
         CLUSTER_CONFIG_ENTRY_READ,
         DECORATORS_READ,
         DECORATORS_CREATE,

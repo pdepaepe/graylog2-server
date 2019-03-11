@@ -187,6 +187,10 @@ const FieldQuickValues = React.createClass({
     this.setState({ showVizOptions: false });
   },
 
+  _showVizOptions() {
+    this.setState({ showVizOptions: true });
+  },
+
   _showHistogram() {
     // Reset the data when toggling histogram and build field query objects from existing data
     this.setState({ data: [], fieldQueryObjects: this._buildFieldQueryObjects(), showHistogram: true }, this._loadQuickValuesData);
@@ -295,7 +299,7 @@ const FieldQuickValues = React.createClass({
                         title="Customize"
                         id="customize-field-graph-dropdown"
                         pullRight>
-          <MenuItem>Configuration</MenuItem>
+          <MenuItem onSelect={this._showVizOptions}>Configuration</MenuItem>
           {toggleVizType}
         </DropdownButton>
       );

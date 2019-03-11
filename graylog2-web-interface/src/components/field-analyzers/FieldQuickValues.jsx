@@ -17,7 +17,6 @@ import CombinedProvider from 'injection/CombinedProvider';
 
 const { FieldQuickValuesStore, FieldQuickValuesActions } = CombinedProvider.get('FieldQuickValues');
 const { RefreshStore } = CombinedProvider.get('Refresh');
-const { SystemStore } = CombinedProvider.get('System');
 
 const FieldQuickValues = React.createClass({
   propTypes: {
@@ -188,17 +187,6 @@ const FieldQuickValues = React.createClass({
     this.setState({ showVizOptions: false });
   },
 
-  _showVizOptions() {
-    SystemStore.elasticsearchVersion().then((version) => {
-      // The stacking feature of the QuickValues widget needs at least ES 5 because earlier versions do not have
-      // the painless scripting engine.
-      if (version.major < 5) {
-        this.setState({ disableStackedFields: true });
-      }
-    });
-    this.setState({ showVizOptions: true });
-  },
-
   _showHistogram() {
     // Reset the data when toggling histogram and build field query objects from existing data
     this.setState({ data: [], fieldQueryObjects: this._buildFieldQueryObjects(), showHistogram: true }, this._loadQuickValuesData);
@@ -307,7 +295,7 @@ const FieldQuickValues = React.createClass({
                         title="Customize"
                         id="customize-field-graph-dropdown"
                         pullRight>
-          <MenuItem onSelect={this._showVizOptions}>Configuration</MenuItem>
+          <MenuItem>Configuration</MenuItem>
           {toggleVizType}
         </DropdownButton>
       );

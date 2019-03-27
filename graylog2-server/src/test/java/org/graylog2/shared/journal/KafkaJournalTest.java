@@ -272,7 +272,7 @@ public class KafkaJournalTest {
         assertTrue(messageJournalDir.length == 1);
         final File[] logFiles = messageJournalDir[0].listFiles((FileFilter) and(fileFileFilter(),
                 suffixFileFilter(".log")));
-        assertEquals("should have two journal segments", 3, logFiles.length);
+        assertEquals("should have two journal segments", 4, logFiles.length);
     }
 
     @Test
@@ -298,7 +298,7 @@ public class KafkaJournalTest {
         // make sure everything is on disk
         journal.flushDirtyLogs();
 
-        assertEquals(3, countSegmentsInDir(messageJournalDir));
+        assertEquals(6, countSegmentsInDir(messageJournalDir));
 
         final int cleanedLogs = journal.cleanupLogs();
         assertEquals(1, cleanedLogs);
@@ -345,7 +345,7 @@ public class KafkaJournalTest {
             int i = 0;
             for (final LogSegment segment : journal.getSegments()) {
                 //assertTrue(i < 2);
-                segment.kafka$log$LogSegment$$maxTimestampSoFar_$eq(i==0?lastModifiedTs[i]:lastModifiedTs[1]);
+                segment.lastModified_$eq(i==0?lastModifiedTs[i]:lastModifiedTs[1]);
                 i++;
             }
 

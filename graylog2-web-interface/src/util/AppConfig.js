@@ -1,3 +1,4 @@
+
 const AppConfig = {
   gl2ServerUrl() {
     return this.appConfig().gl2ServerUrl;
@@ -24,6 +25,15 @@ const AppConfig = {
   customUsername() {
     return window.appConfig.customUsername;
   },
+
+  badgeColor() {
+    return window.appConfig.badgeColor;
+  },
+
+  badgeText() {
+    return window.appConfig.badgeText;
+  },
+
 };
 
 export default AppConfig;

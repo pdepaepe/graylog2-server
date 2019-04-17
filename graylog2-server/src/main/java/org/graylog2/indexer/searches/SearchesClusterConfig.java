@@ -59,7 +59,6 @@ public abstract class SearchesClusterConfig {
             .build();
     private static final Set<String> DEFAULT_SURROUNDING_FILTER_FIELDS = ImmutableSet.<String>builder()
             .add("source")
-            .add("gl2_source_input")
             .add("file")
             .add("source_file")
             .build();

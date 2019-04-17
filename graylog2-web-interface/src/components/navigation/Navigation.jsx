@@ -249,9 +249,9 @@ const Navigation = React.createClass({
             </LinkContainer>
             <HelpMenu active={this._isActive(Routes.GETTING_STARTED)} />
             <UserMenu fullName={this.props.fullName} loginName={this.props.loginName} />
-            {AppConfig.gl2DevMode() ?
+            {AppConfig.badgeText() ?
               <NavItem className="notification-badge-link">
-                <Badge className={badgeStyles.badgeDanger}>DEV</Badge>
+                <Badge style={{ backgroundColor: AppConfig.badgeColor() }}>{AppConfig.badgeText()}</Badge>
               </NavItem>
               : null}
           </Nav>

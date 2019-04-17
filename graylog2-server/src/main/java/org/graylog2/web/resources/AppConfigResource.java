@@ -58,11 +58,15 @@ public class AppConfigResource {
             throw new RuntimeException("Unable to read AppConfig template while generating web interface configuration: ", e);
         }
 
-        final Map<String, Object> model = ImmutableMap.of(
-            "rootTimeZone", configuration.getRootTimeZone(),
-            "serverUri", RestTools.buildEndpointUri(headers, configuration.getWebEndpointUri()),
-            "appPathPrefix", configuration.getWebPrefix(),
-            "customUsername", configuration.getCustomUsername());
+
+        final Map<String, Object> model = ImmutableMap.<String, Object>builder()
+            .put("rootTimeZone", configuration.getRootTimeZone())
+            .put("serverUri", RestTools.buildEndpointUri(headers, configuration.getWebEndpointUri()))
+            .put("appPathPrefix", configuration.getWebPrefix())
+            .put("customUsername", configuration.getCustomUsername())
+            .put("badgeColor", configuration.getBadgeColor())
+            .put("badgeText", configuration.getBadgeText())
+            .build();
         return templateEngine.transform(template, model);
     }
 }

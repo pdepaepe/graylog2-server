@@ -96,6 +96,12 @@ public class Configuration extends BaseConfiguration {
     @Parameter(value = "custom_username")
     private String customUsername = "Username";
 
+    @Parameter(value = "badge_color")
+    private String badgeColor = "#007bff";
+
+    @Parameter(value = "badge_text")
+    private String badgeText = "";
+
     @Parameter(value = "allow_leading_wildcard_searches")
     private boolean allowLeadingWildcardSearches = false;
 
@@ -234,6 +240,10 @@ public class Configuration extends BaseConfiguration {
     }
 
     public String getCustomUsername() { return customUsername; }
+
+    public String getBadgeColor() { return badgeColor; }
+
+    public String getBadgeText() { return badgeText; }
 
     public boolean isAllowLeadingWildcardSearches() {
         return allowLeadingWildcardSearches;

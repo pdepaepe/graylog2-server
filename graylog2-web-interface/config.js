@@ -3,4 +3,6 @@ window.appConfig = {
   gl2AppPathPrefix: '',
   rootTimeZone: 'Europe/Berlin',
   customUsername: 'Username',
+  badgeColor: '#007bff',
+  badgeText: 'PROD',
 };

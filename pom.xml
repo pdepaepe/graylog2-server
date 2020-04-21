@@ -135,7 +135,7 @@
         <reflections.version>0.9.12</reflections.version>
         <retrofit.version>2.9.0</retrofit.version>
         <scala.version>2.12.11</scala.version>
-        <shiro.version>1.5.1</shiro.version>
+        <shiro.version>1.5.3</shiro.version>
         <sigar.version>1.6.4</sigar.version>
         <slf4j.version>1.7.30</slf4j.version>
         <swagger.version>1.5.13</swagger.version>

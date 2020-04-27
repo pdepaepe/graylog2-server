@@ -27,23 +27,13 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.common.util.concurrent.Uninterruptibles;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import kafka.utils.ZKStringSerializer$;
-import kafka.utils.ZkUtils;
-import org.I0Itec.zkclient.ZkClient;
-import org.apache.kafka.clients.consumer.Consumer;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.graylog2.plugin.LocalMetricRegistry;
 import org.graylog2.plugin.ServerStatus;
 import org.graylog2.plugin.configuration.Configuration;
 import org.graylog2.plugin.configuration.ConfigurationRequest;
-import org.graylog2.plugin.configuration.fields.ConfigurationField;
-import org.graylog2.plugin.configuration.fields.DropdownField;
-import org.graylog2.plugin.configuration.fields.NumberField;
-import org.graylog2.plugin.configuration.fields.TextField;
+import org.graylog2.plugin.configuration.fields.*;
 import org.graylog2.plugin.inputs.MessageInput;
 import org.graylog2.plugin.inputs.MisfireException;
 import org.graylog2.plugin.inputs.annotations.ConfigClass;
@@ -56,22 +46,14 @@ import org.graylog2.plugin.lifecycles.Lifecycle;
 import org.graylog2.plugin.system.NodeId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import scala.collection.JavaConversions;
 
 import javax.inject.Named;
 import java.time.Duration;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.Executors;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static com.codahale.metrics.MetricRegistry.name;
 
@@ -79,13 +61,15 @@ public class KafkaTransport extends ThrottleableTransport {
 
     public static final String CK_FETCH_MIN_BYTES = "fetch_min_bytes";
     public static final String CK_FETCH_WAIT_MAX = "fetch_wait_max";
-    public static final String CK_ZOOKEEPER = "zookeeper";
     public static final String CK_TOPIC_FILTER = "topic_filter";
     public static final String CK_THREADS = "threads";
     public static final String CK_OFFSET_RESET = "offset_reset";
     public static final String CK_GROUP_ID = "group_id";
 
+    public static final String CK_AUTO_COMMIT_INTERVAL_MS = "auto_commit_interval_ms";
     public static final String CK_BOOTSTRAP = "bootstrap_server";
+    public static final String CK_MAX_POLL_RECORDS = "max_poll_records";
+    public static final String CK_MAX_POLL_INTERVAL_MS = "max_poll_interval_ms";
 
     public static final String CK_SSL = "ssl";
     public static final String CK_SSL_KEYSTORE_LOCATION="ssl_keystore_location";
@@ -208,16 +192,16 @@ public class KafkaTransport extends ThrottleableTransport {
         props.put("auto.offset.reset", configuration.getString(CK_OFFSET_RESET, DEFAULT_OFFSET_RESET));
         // Default auto commit interval is 60 seconds. Reduce to 1 second to minimize message duplication
         // if something breaks.
-        props.put("commit.interval.ms", "1000");
-        // Set a consumer timeout to avoid blocking on the consumer iterator.
-        props.put("consumer.timeout.ms", "1000");
+        props.put("auto.commit.interval.ms", configuration.getInt(CK_AUTO_COMMIT_INTERVAL_MS));
         props.put("bootstrap.servers", configuration.getString(CK_BOOTSTRAP));
+        props.put("max.poll.interval.ms",configuration.getInt(CK_MAX_POLL_INTERVAL_MS));
+        props.put("max.poll.records",configuration.getInt(CK_MAX_POLL_RECORDS));
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,ByteArrayDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,ByteArrayDeserializer.class.getName());
 
-        // SSL seettings
+        // SSL settings
 
-        if(configuration.getString(CK_SSL).equals("true")) {
+        if(configuration.getBoolean(CK_SSL) == true) {
             props.put("ssl.keystore.location", configuration.getString(CK_SSL_KEYSTORE_LOCATION));
             props.put("ssl.keystore.password", configuration.getString(CK_SSL_KEYSTORE_PASSWORD));
             props.put("ssl.key.password", configuration.getString(CK_SSL_KEY_PASSWORD));
@@ -229,24 +213,14 @@ public class KafkaTransport extends ThrottleableTransport {
 
         final int numThreads = configuration.getInt(CK_THREADS);
         consumer = new KafkaConsumer<>(props);
-        String zkConnect = configuration.getString(CK_ZOOKEEPER);
 
-        ZkClient zkClient = new ZkClient(zkConnect, 30000, 30000, ZKStringSerializer$.MODULE$);
-        ZkUtils zkUtils = ZkUtils.apply(zkClient, false);
+        List<String> subscribedTopics = Arrays.stream(configuration.getString(CK_TOPIC_FILTER).split(",")).collect(Collectors.toList());
 
-        List<String> subscribedTopics = new ArrayList<String>();
-
-        List<String> topics = JavaConversions.seqAsJavaList(zkUtils.getAllTopics());
-
-        topics.stream()
-            .forEach(topicName->{
-                if(topicName!=null && topicName.matches(configuration.getString(CK_TOPIC_FILTER))) {
-                    subscribedTopics.add(topicName);
-                }
-            });
-
-        consumer.subscribe(subscribedTopics);
-
+        if(subscribedTopics.size() == 1) {
+            consumer.subscribe(Pattern.compile(subscribedTopics.get(0)));
+        } else {
+            consumer.subscribe(subscribedTopics);
+        }
         final ExecutorService executor = executorService(numThreads);
 
         // this is being used during shutdown to first stop all submitted jobs before committing the offsets back to zookeeper
@@ -382,12 +356,6 @@ public class KafkaTransport extends ThrottleableTransport {
         public ConfigurationRequest getRequestedConfiguration() {
             final ConfigurationRequest cr = super.getRequestedConfiguration();
 
-            cr.addField(new TextField(
-                CK_ZOOKEEPER,
-                "ZooKeeper address",
-                "127.0.0.1:2181",
-                "Host and port of the ZooKeeper that is managing your Kafka cluster.",
-                ConfigurationField.Optional.NOT_OPTIONAL));
 
             cr.addField(new TextField(
                 CK_BOOTSTRAP,
@@ -404,13 +372,11 @@ public class KafkaTransport extends ThrottleableTransport {
                 "Every topic that matches this regular expression will be consumed.",
                 ConfigurationField.Optional.NOT_OPTIONAL));
 
-
-            cr.addField(new TextField(
+            cr.addField(new BooleanField(
                 CK_SSL,
                 "SSL",
-                "true",
-                "true or false for SSL ",
-                ConfigurationField.Optional.NOT_OPTIONAL));
+                false,
+                "true or false for SSL "));
 
             cr.addField(new TextField(
                 CK_SSL_KEYSTORE_LOCATION,
@@ -490,6 +456,27 @@ public class KafkaTransport extends ThrottleableTransport {
                 DEFAULT_GROUP_ID,
                 "Name of the consumer group the Kafka input belongs to",
                 ConfigurationField.Optional.OPTIONAL));
+
+            cr.addField(new NumberField(
+                CK_MAX_POLL_INTERVAL_MS,
+                "max.poll.interval.ms",
+                300000,
+                "The maximum delay between invocations of poll() when using consumer group management.",
+                ConfigurationField.Optional.NOT_OPTIONAL));
+
+            cr.addField(new NumberField(
+                CK_MAX_POLL_RECORDS,
+                "max.poll.records",
+                500,
+                "The maximum number of records returned in a single call to poll().",
+                ConfigurationField.Optional.NOT_OPTIONAL));
+
+            cr.addField(new NumberField(
+                CK_AUTO_COMMIT_INTERVAL_MS,
+                "auto.commit.interval.ms",
+                1000,
+                "The frequency in milliseconds that the consumer offsets are auto-committed to Kafka",
+                ConfigurationField.Optional.NOT_OPTIONAL));
 
             return cr;
         }

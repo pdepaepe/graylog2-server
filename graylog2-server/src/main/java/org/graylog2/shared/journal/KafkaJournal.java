@@ -1,16 +1,16 @@
 /**
  * This file is part of Graylog.
- *
+ * <p>
  * Graylog is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * Graylog is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with Graylog.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -491,7 +491,7 @@ public class KafkaJournal extends AbstractIdleService implements Journal {
         MemoryRecords mRecs = MemoryRecords.withRecords(CompressionType.NONE, messages.toArray(new SimpleRecord[messages.size()]));
         int leaderEpoch = mRecs.batches().iterator().next().partitionLeaderEpoch();
 
-        final LogAppendInfo appendInfo = kafkaLog.appendAsLeader(mRecs, 1, new AppendOrigin.Client$(), ApiVersion.latestVersion());
+        final LogAppendInfo appendInfo = kafkaLog.appendAsLeader(mRecs, 0, new AppendOrigin.Client$(), ApiVersion.latestVersion());
         long lastWriteOffset = appendInfo.lastOffset();
         if (LOG.isDebugEnabled()) {
             LOG.debug("Wrote {} messages to journal: {} bytes (payload {} bytes), log position {} to {}",
@@ -545,7 +545,7 @@ public class KafkaJournal extends AbstractIdleService implements Journal {
 
             final FetchDataInfo fdInfo = kafkaLog.read(readOffset,
                 5 * 1024 * 1024,
-                FetchTxnCommitted$.MODULE$, true); //we read 5 MB to get at least one batch if any.
+                FetchLogEnd$.MODULE$, true); //we read 5 MB to get at least one batch if any.
 
             LOG.debug("fdInfo message Offset is {}, last kafkaLog offset is {}, last segment OffsetIndex is {}, offset requested was {}, num Of segments Is {}, startOffset is {}", fdInfo.fetchOffsetMetadata().messageOffset(), kafkaLog.logEndOffset(), kafkaLog.activeSegment().offsetIndex().lastOffset(), readOffset, kafkaLog.numberOfSegments(), kafkaLog.logStartOffset());
 
@@ -558,6 +558,9 @@ public class KafkaJournal extends AbstractIdleService implements Journal {
             while (iterator1.hasNext() && messages.size() < maximumCount) {
                 final Record record = iterator1.next();
                 if (record.offset() < readOffset) { //the batch starts before the log we asked
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace("record offset is inferior to readOffset asked", record.offset(), readOffset);
+                    }
                     continue;
                 }
                 if (firstOffset == Long.MIN_VALUE) firstOffset = record.offset();
@@ -696,6 +699,7 @@ public class KafkaJournal extends AbstractIdleService implements Journal {
     protected void shutDown() throws Exception {
         LOG.debug("Shutting down journal!");
         shuttingDown = true;
+        kafkaLog.flush();
 
         offsetFlusherFuture.cancel(false);
         logRetentionFuture.cancel(false);
@@ -927,8 +931,8 @@ public class KafkaJournal extends AbstractIdleService implements Journal {
             );
             loggerForCleaner.debug("[cleanup-committed] Keeping segments {}", logSegments);
             //both call are needed to allow KafkaLog to delete segments.
-            kafkaLog.maybeIncrementLogStartOffset(committedOffset);
-            kafkaLog.updateHighWatermark(committedOffset);
+            final long highWatermark = kafkaLog.updateHighWatermark(committedOffset);
+            kafkaLog.maybeIncrementLogStartOffset(highWatermark);
             return kafkaLog.deleteOldSegments();
         }
     }

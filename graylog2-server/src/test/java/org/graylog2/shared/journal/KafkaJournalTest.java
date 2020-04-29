@@ -229,8 +229,8 @@ public class KafkaJournalTest {
         list.add(journal.createEntry(randomAlphanumeric(6).getBytes(UTF_8), largeMessage1.getBytes(UTF_8)));
 
         final byte[] idBytes0 = randomAlphanumeric(6).getBytes(UTF_8);
-        // Build a message that has exactly the max segment size
-        final String largeMessage2 = randomAlphanumeric(Ints.saturatedCast(segmentSize.toBytes() - AbstractRecords.LOG_OVERHEAD - DefaultRecord.MAX_RECORD_OVERHEAD - idBytes0.length));
+        // Build a message that has exactly the max message size
+        final String largeMessage2 = randomAlphanumeric(Ints.saturatedCast(segmentSize.toBytes() - AbstractRecords.LOG_OVERHEAD - DefaultRecord.MAX_RECORD_OVERHEAD - idBytes0.length -37));
         list.add(journal.createEntry(idBytes0, largeMessage2.getBytes(UTF_8)));
 
         while (size <= maxSize) {
@@ -272,7 +272,7 @@ public class KafkaJournalTest {
         assertTrue(messageJournalDir.length == 1);
         final File[] logFiles = messageJournalDir[0].listFiles((FileFilter) and(fileFileFilter(),
                 suffixFileFilter(".log")));
-        assertEquals("should have two journal segments", 4, logFiles.length);
+        assertEquals("should have six journal segments", 6, logFiles.length);
     }
 
     @Test
@@ -388,25 +388,25 @@ public class KafkaJournalTest {
         // make sure everything is on disk
         journal.flushDirtyLogs();
 
-        assertEquals(countSegmentsInDir(messageJournalDir), 4);
+        assertEquals(countSegmentsInDir(messageJournalDir), 6);
 
         // we haven't committed any offsets, this should not touch anything.
         final int cleanedLogs = journal.cleanupLogs();
         assertEquals(cleanedLogs, 0);
 
         final int numberOfSegments = countSegmentsInDir(messageJournalDir);
-        assertEquals(numberOfSegments, 4);
+        assertEquals(numberOfSegments, 6);
 
         // mark first half of first segment committed, should not clean anything
-        journal.markJournalOffsetCommitted(bulkSize / 2);
+        journal.markJournalOffsetCommitted(bulkSize / 4);
         assertEquals("should not touch segments", journal.cleanupLogs(), 0);
-        assertEquals(countSegmentsInDir(messageJournalDir), 4);
+        assertEquals(countSegmentsInDir(messageJournalDir), 6);
 
         journal.markJournalOffsetCommitted(bulkSize + 1);
 
         int cleaned = journal.cleanupLogs();
         //assertEquals("first segment should've been purged", cleaned, 1);
-        assertEquals(countSegmentsInDir(messageJournalDir), 3);
+        assertEquals(countSegmentsInDir(messageJournalDir), 4);
 
         journal.markJournalOffsetCommitted(bulkSize * 4);
 

@@ -479,7 +479,7 @@ public class Indices {
                 )
         );
 
-        final UpdateSettings request = new UpdateSettings.Builder(settings).addIndex(index).build();
+        final UpdateSettings request = new UpdateSettings.Builder(settings).addIndex(index).setParameter("timeout","240s").setParameter("master_timeout","240s").build();
         JestUtils.execute(jestClient, request, () -> "Couldn't set index " + index + " to read-only");
     }
 

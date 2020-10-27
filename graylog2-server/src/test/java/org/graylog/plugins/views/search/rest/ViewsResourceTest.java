@@ -145,8 +145,17 @@ public class ViewsResourceTest {
 
     @Test
     public void invalidObjectIdReturnsViewNotFoundException() {
+
+        final UserImpl testUser = new UserImpl(mock(PasswordAlgorithmFactory.class), new Permissions(ImmutableSet.of()), ImmutableMap.of("username", "testuser"));
+
+        final UserContext userContext = mock(UserContext.class);
+        when(userContext.getUser()).thenReturn(testUser);
+        when(userContext.getUserId()).thenReturn("testuser");
+        when(currentUser.getName()).thenReturn("testuser");
+        when(currentUser.isLocalAdmin()).thenReturn(true);
+
         expectedException.expect(NotFoundException.class);
-        this.viewsResource.get("invalid");
+        this.viewsResource.get("invalid", userContext);
     }
 
     @Test

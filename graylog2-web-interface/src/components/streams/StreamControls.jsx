@@ -3,7 +3,6 @@ import React from 'react';
 // eslint-disable-next-line no-restricted-imports
 import createReactClass from 'create-react-class';
 
-import SharingDisabledPopover from 'components/permissions/SharingDisabledPopover';
 import { DropdownButton, MenuItem } from 'components/graylog';
 import { IfPermitted, HasOwnership } from 'components/common';
 import PermissionsMixin from 'util/PermissionsMixin';
@@ -22,7 +21,6 @@ const StreamControls = createReactClass({
     indexSets: PropTypes.array.isRequired,
     onDelete: PropTypes.func.isRequired,
     onClone: PropTypes.func.isRequired,
-    onShare: PropTypes.func.isRequired,
     onQuickAdd: PropTypes.func.isRequired,
     onUpdate: PropTypes.func.isRequired,
     isDefaultStream: PropTypes.bool,
@@ -65,7 +63,7 @@ const StreamControls = createReactClass({
   },
 
   render() {
-    const { stream, isDefaultStream, user, onShare, onUpdate, indexSets } = this.props;
+    const { stream, isDefaultStream, user, onUpdate, indexSets } = this.props;
 
     return (
       <span>
@@ -85,14 +83,6 @@ const StreamControls = createReactClass({
           <MenuItem key={`setAsStartpage-${stream.id}`} onSelect={this._setStartpage} disabled={user.read_only}>
             Set as startpage
           </MenuItem>
-
-          <HasOwnership id={stream.id} type="stream">
-            {({ disabled }) => (
-              <MenuItem key={`share-${stream.id}`} onSelect={onShare} disabled={disabled}>
-                Share {disabled && <SharingDisabledPopover type="stream" />}
-              </MenuItem>
-            )}
-          </HasOwnership>
           <IfPermitted permissions={`streams:edit:${stream.id}`}>
             <MenuItem key={`divider-${stream.id}`} divider />
           </IfPermitted>

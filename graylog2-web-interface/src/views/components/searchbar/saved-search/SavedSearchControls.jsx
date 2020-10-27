@@ -18,13 +18,11 @@ import ViewLoaderContext from 'views/logic/ViewLoaderContext';
 import NewViewLoaderContext from 'views/logic/NewViewLoaderContext';
 import CSVExportModal from 'views/components/searchbar/csvexport/CSVExportModal';
 import ViewTypeLabel from 'views/components/ViewTypeLabel';
-import EntityShareModal from 'components/permissions/EntityShareModal';
 import CurrentUserContext from 'contexts/CurrentUserContext';
 import * as Permissions from 'views/Permissions';
 import type { UserJSON } from 'logic/users/User';
 import ViewPropertiesModal from 'views/components/views/ViewPropertiesModal';
 import { loadAsDashboard, loadNewSearch } from 'views/logic/views/Actions';
-import SharingDisabledPopover from 'components/permissions/SharingDisabledPopover';
 
 import SavedSearchForm from './SavedSearchForm';
 import SavedSearchList from './SavedSearchList';
@@ -38,7 +36,6 @@ type State = {
   showForm: boolean,
   showList: boolean,
   showCSVExport: boolean,
-  showShareSearch: boolean,
   showMetadataEdit: boolean,
   newTitle: string,
 };
@@ -71,7 +68,6 @@ class SavedSearchControls extends React.Component<Props, State> {
     this.state = {
       showMetadataEdit: false,
       showCSVExport: false,
-      showShareSearch: false,
       showForm: false,
       showList: false,
       newTitle: (view && view.title) || '',
@@ -100,12 +96,6 @@ class SavedSearchControls extends React.Component<Props, State> {
     const { showMetadataEdit } = this.state;
 
     this.setState({ showMetadataEdit: !showMetadataEdit });
-  };
-
-  toggleShareSearch = () => {
-    const { showShareSearch } = this.state;
-
-    this.setState({ showShareSearch: !showShareSearch });
   };
 
   onChangeTitle = (e: SyntheticInputEvent<HTMLInputElement>) => {
@@ -196,7 +186,7 @@ class SavedSearchControls extends React.Component<Props, State> {
   };
 
   render() {
-    const { showForm, showList, newTitle, showCSVExport, showShareSearch, showMetadataEdit } = this.state;
+    const { showForm, showList, newTitle, showCSVExport, showMetadataEdit } = this.state;
     const { viewStoreState: { view, dirty }, theme } = this.props;
 
     const loaded = (view && view.id);
@@ -259,14 +249,6 @@ class SavedSearchControls extends React.Component<Props, State> {
                       <MenuItem disabled={disableReset} onSelect={() => loadNewView()} data-testid="reset-search">
                         <Icon name="eraser" /> Reset search
                       </MenuItem>
-                      <MenuItem divider />
-                      <HasOwnership id={view.id} type="search">
-                        {({ disabled }) => (
-                          <MenuItem onSelect={this.toggleShareSearch} title="Share search" disabled={!isAllowedToEdit || disabled}>
-                            <Icon name="share-alt" /> Share {disabled && <SharingDisabledPopover type="search" />}
-                          </MenuItem>
-                        )}
-                      </HasOwnership>
                     </DropdownButton>
                     {showCSVExport && (
                       <CSVExportModal view={view} closeModal={this.toggleCSVExport} />
@@ -277,13 +259,6 @@ class SavedSearchControls extends React.Component<Props, State> {
                                            title="Editing saved search"
                                            onClose={this.toggleMetadataEdit}
                                            onSave={onSaveView} />
-                    )}
-                    {showShareSearch && (
-                      <EntityShareModal entityId={view.id}
-                                        entityType="search"
-                                        entityTitle={view.title}
-                                        description={`Search for a User or Team to add as collaborator on this ${viewTypeLabel}.`}
-                                        onClose={this.toggleShareSearch} />
                     )}
                   </ButtonGroup>
                 </div>

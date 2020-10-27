@@ -3,8 +3,6 @@ import React, { useState } from 'react';
 import lodash from 'lodash';
 import { PluginStore } from 'graylog-web-plugin/plugin';
 
-import EntityShareModal from 'components/permissions/EntityShareModal';
-import SharingDisabledPopover from 'components/permissions/SharingDisabledPopover';
 import Routes from 'routing/Routes';
 import { Link, LinkContainer } from 'components/graylog/router';
 import {
@@ -16,7 +14,6 @@ import {
 import {
   EntityListItem,
   IfPermitted,
-  HasOwnership,
 } from 'components/common';
 
 import EventDefinitionDescription from './EventDefinitionDescription';
@@ -62,7 +59,6 @@ const EventDefinitionEntry = ({
   onEnable,
   onDelete,
 }: Props) => {
-  const [showEntityShareModal, setShowEntityShareModal] = useState(false);
   const isScheduled = lodash.get(context, `scheduler.${eventDefinition.id}.is_scheduled`, true);
 
   let toggle = <MenuItem onClick={onDisable(eventDefinition)}>Disable</MenuItem>;
@@ -83,13 +79,6 @@ const EventDefinitionEntry = ({
           {toggle}
           <MenuItem divider />
           <MenuItem onClick={onDelete(eventDefinition)}>Delete</MenuItem>
-          <HasOwnership id={eventDefinition.id} type="event_definition">
-            {({ disabled }) => (
-              <MenuItem key={`share-${eventDefinition.id}`} onSelect={() => setShowEntityShareModal(true)} disabled={disabled}>
-                Share {disabled && <SharingDisabledPopover type="stream" />}
-              </MenuItem>
-            )}
-          </HasOwnership>
         </DropdownButton>
       </IfPermitted>
     </React.Fragment>
@@ -112,13 +101,6 @@ const EventDefinitionEntry = ({
                       description={renderDescription(eventDefinition, context)}
                       noItemsText="Could not find any items with the given filter."
                       actions={actions} />
-      { showEntityShareModal && (
-        <EntityShareModal entityId={eventDefinition.id}
-                          entityType="event_definition"
-                          entityTitle={eventDefinition.title}
-                          description="Search for a User or Team to add as collaborator on this event definition."
-                          onClose={() => setShowEntityShareModal(false)} />
-      )}
     </>
   );
 };

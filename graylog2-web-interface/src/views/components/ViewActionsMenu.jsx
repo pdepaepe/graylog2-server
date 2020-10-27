@@ -19,9 +19,7 @@ import * as Permissions from 'views/Permissions';
 import View from 'views/logic/views/View';
 import type { UserJSON } from 'logic/users/User';
 import CurrentUserContext from 'contexts/CurrentUserContext';
-import EntityShareModal from 'components/permissions/EntityShareModal';
 import ViewTypeLabel from 'views/components/ViewTypeLabel';
-import SharingDisabledPopover from 'components/permissions/SharingDisabledPopover';
 
 import ViewPropertiesModal from './views/ViewPropertiesModal';
 import IfDashboard from './dashboard/IfDashboard';
@@ -34,7 +32,6 @@ const _hasUndeclaredParameters = (searchMetadata: SearchMetadata) => searchMetad
 
 const ViewActionsMenu = ({ view, isNewView, metadata }) => {
   const currentUser = useContext(CurrentUserContext);
-  const [shareViewOpen, setShareViewOpen] = useState(false);
   const [debugOpen, setDebugOpen] = useState(false);
   const [saveAsViewOpen, setSaveAsViewOpen] = useState(false);
   const [editViewOpen, setEditViewOpen] = useState(false);
@@ -67,13 +64,6 @@ const ViewActionsMenu = ({ view, isNewView, metadata }) => {
         <MenuItem onSelect={() => setEditViewOpen(true)} disabled={isNewView || !allowedToEdit}>
           <Icon name="edit" /> Edit metadata
         </MenuItem>
-        <HasOwnership id={view.id} type="dashboard">
-          {({ disabled }) => (
-            <MenuItem onSelect={() => setShareViewOpen(true)} disabled={isNewView || !allowedToEdit || disabled}>
-              <Icon name="share-alt" /> Share {disabled && <SharingDisabledPopover type="dashboard" />}
-            </MenuItem>
-          )}
-        </HasOwnership>
         <MenuItem onSelect={() => setCsvExportOpen(true)}><Icon name="cloud-download-alt" /> Export to CSV</MenuItem>
         {debugOverlay}
         <IfDashboard>
@@ -95,14 +85,6 @@ const ViewActionsMenu = ({ view, isNewView, metadata }) => {
                              title="Editing dashboard"
                              onClose={() => setEditViewOpen(false)}
                              onSave={onSaveView} />
-      )}
-
-      {shareViewOpen && (
-        <EntityShareModal entityId={view.id}
-                          entityType="dashboard"
-                          entityTitle={view.title}
-                          description={`Search for a User or Team to add as collaborator on this ${viewTypeLabel}.`}
-                          onClose={() => setShareViewOpen(false)} />
       )}
       {csvExportOpen && <CSVExportModal view={view} closeModal={() => setCsvExportOpen(false)} />}
     </ButtonGroup>

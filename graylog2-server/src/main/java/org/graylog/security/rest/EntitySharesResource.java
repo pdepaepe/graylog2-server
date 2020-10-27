@@ -59,6 +59,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
+import static org.graylog2.shared.security.RestPermissions.BUFFERS_READ;
 import static org.graylog2.shared.security.RestPermissions.USERS_EDIT;
 
 @Path("shares")
@@ -115,6 +116,10 @@ public class EntitySharesResource extends RestResourceWithOwnerCheck {
     @NoAuditEvent("This does not change any data")
     public EntityShareResponse prepareShare(@ApiParam(name = "entityGRN", required = true) @PathParam("entityGRN") @NotBlank String entityGRN,
                                             @ApiParam(name = "JSON Body", required = true) @NotNull @Valid EntityShareRequest request) {
+
+        if (!isPermitted(BUFFERS_READ)) {
+            throw new ForbiddenException("Not authorized");
+        }
         final GRN grn = grnRegistry.parse(entityGRN);
         checkOwnership(grn);
 
@@ -131,6 +136,9 @@ public class EntitySharesResource extends RestResourceWithOwnerCheck {
     @NoAuditEvent("Audit events are created within EntitySharesService")
     public Response updateEntityShares(@ApiParam(name = "entityGRN", required = true) @PathParam("entityGRN") @NotBlank String entityGRN,
                                                   @ApiParam(name = "JSON Body", required = true) @NotNull @Valid EntityShareRequest request) {
+        if (!isPermitted(BUFFERS_READ)) {
+            throw new ForbiddenException("Not authorized");
+        }
         final GRN entity = grnRegistry.parse(entityGRN);
         checkOwnership(entity);
 
@@ -145,6 +153,9 @@ public class EntitySharesResource extends RestResourceWithOwnerCheck {
     @GET
     @Path("entities/{entityGRN}")
     public Response entityShares(@PathParam("entityGRN") @NotBlank String entityGRN) {
+        if (!isPermitted(BUFFERS_READ)) {
+            throw new ForbiddenException("Not authorized");
+        }
         final GRN grn = grnRegistry.parse(entityGRN);
 
         checkOwnership(grn);

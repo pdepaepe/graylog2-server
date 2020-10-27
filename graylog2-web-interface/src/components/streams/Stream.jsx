@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-import EntityShareModal from 'components/permissions/EntityShareModal';
 import { Link, LinkContainer } from 'components/graylog/router';
 import { Button, Tooltip } from 'components/graylog';
 import { OverlayElement, Icon } from 'components/common';
@@ -79,7 +78,6 @@ class Stream extends React.Component {
     this.state = {
       loading: false,
       showStreamRuleForm: false,
-      showEntityShareModal: false,
     };
   }
 
@@ -89,14 +87,6 @@ class Stream extends React.Component {
 
   _openStreamRuleForm = () => {
     this.setState({ showStreamRuleForm: true });
-  };
-
-  _closeEntityShareModal = () => {
-    this.setState({ showEntityShareModal: false });
-  };
-
-  _openEntityShareModal = () => {
-    this.setState({ showEntityShareModal: true });
   };
 
   _onDelete= (stream) => {
@@ -155,7 +145,7 @@ class Stream extends React.Component {
 
   render() {
     const { indexSets, stream, permissions, streamRuleTypes, user } = this.props;
-    const { loading, showStreamRuleForm, showEntityShareModal } = this.state;
+    const { loading, showStreamRuleForm } = this.state;
 
     const isDefaultStream = stream.is_default;
     const defaultStreamTooltip = isDefaultStream
@@ -226,7 +216,6 @@ class Stream extends React.Component {
                         onDelete={this._onDelete}
                         onUpdate={this._onUpdate}
                         onClone={this._onClone}
-                        onShare={this._openEntityShareModal}
                         onQuickAdd={this._openStreamRuleForm}
                         indexSets={indexSets}
                         isDefaultStream={isDefaultStream} />
@@ -270,13 +259,6 @@ class Stream extends React.Component {
                           onSubmit={this._onSaveStreamRule}
                           streamRuleTypes={streamRuleTypes} />
         ) }
-        { showEntityShareModal && (
-          <EntityShareModal entityId={stream.id}
-                            entityType="stream"
-                            entityTitle={stream.title}
-                            description="Search for a User or Team to add as collaborator on this stream."
-                            onClose={this._closeEntityShareModal} />
-        )}
       </StreamListItem>
     );
   }

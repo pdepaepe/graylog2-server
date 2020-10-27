@@ -193,7 +193,7 @@ public class LegacyAlertConditionMigratorTest {
         assertThat(emailNotification.config()).isInstanceOf(LegacyAlarmCallbackEventNotificationConfig.class);
         assertThat((LegacyAlarmCallbackEventNotificationConfig) emailNotification.config()).satisfies(config -> {
             assertThat(config.callbackType()).isEqualTo("org.graylog2.alarmcallbacks.EmailAlarmCallback");
-            assertThat(config.configuration().get("sender")).isEqualTo("graylog@example.org");
+            assertThat(config.configuration().get("sender")).isEqualTo("alert@logs.ovh.com");
             assertThat(config.configuration().get("subject")).isEqualTo("Graylog alert for stream: ${stream.title}: ${check_result.resultDescription}");
             assertThat((String) config.configuration().get("body")).contains("Alert Description: ${check_result.resultDescription}\nDate: ");
             assertThat(config.configuration().get("user_receivers")).isEqualTo(Collections.emptyList());

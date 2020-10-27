@@ -12,8 +12,6 @@ import MessageProcessorsConfig from 'components/configurations/MessageProcessors
 import SidecarConfig from 'components/configurations/SidecarConfig';
 import EventsConfig from 'components/configurations/EventsConfig';
 import UrlWhiteListConfig from 'components/configurations/UrlWhiteListConfig';
-
-import DecoratorsConfig from '../components/configurations/DecoratorsConfig';
 import {} from 'components/maps/configurations';
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
@@ -188,9 +186,6 @@ class ConfigurationsPage extends React.Component {
                                 updateConfig={this._onUpdate(URL_WHITELIST_CONFIG)} />
           </Col>
           )}
-          <Col md={6}>
-            <DecoratorsConfig />
-          </Col>
         </>
       );
     }

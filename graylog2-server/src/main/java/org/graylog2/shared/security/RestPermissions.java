@@ -287,13 +287,12 @@ public class RestPermissions implements PluginPermissions {
 
     // Standard set of PERMISSIONS of readers.
     protected static final ImmutableSet<String> READER_BASE_PERMISSION_SELECTION = ImmutableSet.<String>builder().add(
-            BUFFERS_READ,
             CLUSTER_CONFIG_ENTRY_READ,
             DECORATORS_READ,
+            DECORATORS_CREATE,
+            DECORATORS_EDIT,
             FIELDNAMES_READ,
             INDEXERCLUSTER_READ,
-            INPUTS_READ,
-            JOURNAL_READ,
             JVMSTATS_READ,
             MESSAGECOUNT_READ,
             MESSAGES_ANALYZE,
@@ -310,15 +309,6 @@ public class RestPermissions implements PluginPermissions {
     protected static final ImmutableSet<BuiltinRole> BUILTIN_ROLES = ImmutableSet.<BuiltinRole>builder().add(
             BuiltinRole.create("Dashboard Creator", "Allows creation of Dashboards (built-in)", ImmutableSet.of(
                     RestPermissions.DASHBOARDS_CREATE
-            )),
-            BuiltinRole.create("Event Definition Creator", "Allows creation of Event Definitions (built-in)", ImmutableSet.of(
-                    RestPermissions.EVENT_DEFINITIONS_CREATE
-            )),
-            BuiltinRole.create("Event Notification Creator", "Allows creation of Event Notifications (built-in)", ImmutableSet.of(
-                    RestPermissions.EVENT_NOTIFICATIONS_CREATE
-            )),
-            BuiltinRole.create("User Inspector", "Allows listing all user accounts (built-in)", ImmutableSet.of(
-                    RestPermissions.USERS_READ
             ))
     ).build();
 

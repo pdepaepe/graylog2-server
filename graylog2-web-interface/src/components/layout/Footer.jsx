@@ -7,6 +7,7 @@ import type { ThemeInterface } from 'theme';
 import Version from 'util/Version';
 import connect from 'stores/connect';
 import StoreProvider from 'injection/StoreProvider';
+import { IfPermitted } from 'components/common';
 
 const SystemStore = StoreProvider.getStore('System');
 
@@ -56,7 +57,10 @@ const Footer = ({ system }: Props) => {
 
   return (
     <StyledFooter>
-      Graylog {system.version} on {system.hostname} ({jvm.info})
+      Graylog {Version.getFullVersion()}
+        <IfPermitted permissions="buffers:read">
+            on {system.hostname} ({jvm.info})
+        </IfPermitted>
     </StyledFooter>
   );
 };

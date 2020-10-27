@@ -6,6 +6,8 @@ import { Button, FormGroup } from 'components/graylog';
 import { Input } from 'components/bootstrap';
 import CombinedProvider from 'injection/CombinedProvider';
 
+import AppConfig from 'util/AppConfig';
+
 const { SessionActions } = CombinedProvider.get('Session');
 
 const StyledFormGroup = styled(FormGroup)`
@@ -56,7 +58,7 @@ const LoginForm = ({ onErrorChange }) => {
       <Input ref={(username) => { usernameInput = username; }}
              id="username"
              type="text"
-             placeholder="Username"
+             placeholder={AppConfig.customUsername()}
              autoFocus />
 
       <Input ref={(password) => { passwordInput = password; }}

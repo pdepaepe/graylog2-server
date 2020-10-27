@@ -68,7 +68,8 @@ public class AppConfigResource {
         final Map<String, Object> model = ImmutableMap.of(
             "rootTimeZone", configuration.getRootTimeZone(),
             "serverUri", baseUri.resolve(HttpConfiguration.PATH_API),
-            "appPathPrefix", baseUri.getPath());
+            "appPathPrefix", baseUri.getPath(),
+            "customUsername", configuration.getCustomUsername());
         return templateEngine.transform(template, model);
     }
 }

@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-
-import CollapsibleStreamRuleList from 'components/streamrules/CollapsibleStreamRuleList';
 import { Pluralize } from 'components/common';
 import { Button } from 'components/graylog';
 
@@ -54,14 +52,6 @@ const StreamMetaData = ({ isDefaultStream, stream, streamRuleTypes, permissions 
           </Button>
         )}
       </StreamMetaDataWrapper>
-
-      {!isDefaultStream && (
-        <CollapsibleStreamRuleList key={`streamRules-${stream.id}`}
-                                   stream={stream}
-                                   streamRuleTypes={streamRuleTypes}
-                                   permissions={permissions}
-                                   expanded={expanded} />
-      )}
     </>
   );
 };

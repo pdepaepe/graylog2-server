@@ -1,22 +1,14 @@
 // @flow strict
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
+
+import React from 'react';
 import styled, { type StyledComponent, css } from 'styled-components';
 
 import type { ThemeInterface } from 'theme';
 import Version from 'util/Version';
-import connect from 'stores/connect';
-import StoreProvider from 'injection/StoreProvider';
 import { IfPermitted } from 'components/common';
 
-const SystemStore = StoreProvider.getStore('System');
+import { ExtendedFooter } from 'components/footer';
 
-type Props = {
-  system?: {
-    version: string,
-    hostname: string,
-  },
-};
 
 const StyledFooter: StyledComponent<{}, ThemeInterface, HTMLElement> = styled.footer(({ theme }) => css`
   text-align: center;
@@ -30,50 +22,16 @@ const StyledFooter: StyledComponent<{}, ThemeInterface, HTMLElement> = styled.fo
   }
 `);
 
-const Footer = ({ system }: Props) => {
-  const [jvm, setJvm] = useState();
-
-  useEffect(() => {
-    let mounted = true;
-
-    SystemStore.jvm().then((jvmInfo) => {
-      if (mounted) {
-        setJvm(jvmInfo);
-      }
-    });
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  if (!(system && jvm)) {
-    return (
-      <StyledFooter>
-        Graylog {Version.getFullVersion()}
-      </StyledFooter>
-    );
-  }
-
+const Footer = () => {
   return (
     <StyledFooter>
       Graylog {Version.getFullVersion()}
         <IfPermitted permissions="buffers:read">
-            on {system.hostname} ({jvm.info})
+          <ExtendedFooter />
         </IfPermitted>
     </StyledFooter>
   );
 };
 
-Footer.propTypes = {
-  system: PropTypes.shape({
-    version: PropTypes.string,
-    hostname: PropTypes.string,
-  }),
-};
 
-Footer.defaultProps = {
-  system: undefined,
-};
-
-export default connect(Footer, { system: SystemStore }, ({ system: { system } = {} }) => ({ system }));
+export default Footer;

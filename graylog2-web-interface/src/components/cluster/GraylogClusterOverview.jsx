@@ -3,21 +3,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import createReactClass from 'create-react-class';
-import ReactDOM from 'react-dom';
 import Reflux from 'reflux';
 import _ from 'lodash';
 
 import { Col, Row } from 'components/graylog';
 import { Spinner } from 'components/common';
 import StoreProvider from 'injection/StoreProvider';
-import ActionsProvider from 'injection/ActionsProvider';
-import NumberUtils from 'util/NumberUtils';
 import EventHandlersThrottler from 'util/EventHandlersThrottler';
 
-import TrafficGraph from './TrafficGraph';
-
-const ClusterTrafficStore = StoreProvider.getStore('ClusterTraffic');
-const ClusterTrafficActions = ActionsProvider.getActions('ClusterTraffic');
 const NodesStore = StoreProvider.getStore('Nodes');
 
 const GraylogClusterOverview = createReactClass({
@@ -28,7 +21,7 @@ const GraylogClusterOverview = createReactClass({
     children: PropTypes.node,
   },
 
-  mixins: [Reflux.connect(NodesStore, 'nodes'), Reflux.connect(ClusterTrafficStore, 'traffic')],
+  mixins: [Reflux.connect(NodesStore, 'nodes')],
 
   getDefaultProps() {
     return {
@@ -43,27 +36,7 @@ const GraylogClusterOverview = createReactClass({
     };
   },
 
-  componentDidMount() {
-    ClusterTrafficActions.traffic();
-    window.addEventListener('resize', this._onResize);
-    this._resizeGraphs();
-  },
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this._onResize);
-  },
-
   eventThrottler: new EventHandlersThrottler(),
-
-  _onResize() {
-    this.eventThrottler.throttle(() => this._resizeGraphs());
-  },
-
-  _resizeGraphs() {
-    const domNode = ReactDOM.findDOMNode(this._container);
-
-    this.setState({ graphWidth: domNode.clientWidth });
-  },
 
   renderClusterInfo() {
     const { nodes } = this.state;
@@ -84,33 +57,6 @@ const GraylogClusterOverview = createReactClass({
     return content;
   },
 
-  renderTrafficGraph() {
-    const { traffic, graphWidth } = this.state;
-
-    let sumOutput = null;
-    let trafficGraph = <Spinner />;
-
-    if (traffic) {
-      const bytesOut = _.reduce(traffic.output, (result, value) => result + value);
-
-      sumOutput = <small>Last 30 days: {NumberUtils.formatBytes(bytesOut)}</small>;
-
-      trafficGraph = (
-        <TrafficGraph traffic={traffic.output}
-                      from={traffic.from}
-                      to={traffic.to}
-                      width={graphWidth} />
-      );
-    }
-
-    return (
-      <>
-        <h3 ref={(container) => { this._container = container; }} style={{ marginBottom: 10 }}>Outgoing traffic {sumOutput}</h3>
-        {trafficGraph}
-      </>
-    );
-  },
-
   renderHeader() {
     return <h2 style={{ marginBottom: 10 }}>Graylog cluster</h2>;
   },
@@ -125,11 +71,6 @@ const GraylogClusterOverview = createReactClass({
           {this.renderClusterInfo()}
           <hr />
           {children}
-          <Row>
-            <Col md={12}>
-              {this.renderTrafficGraph()}
-            </Col>
-          </Row>
         </Col>
       </Row>
     );
@@ -147,9 +88,6 @@ const GraylogClusterOverview = createReactClass({
               {this.renderClusterInfo()}
               <hr />
               {children}
-            </Col>
-            <Col md={6}>
-              {this.renderTrafficGraph()}
             </Col>
           </Row>
         </Col>

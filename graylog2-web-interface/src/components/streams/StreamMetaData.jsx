@@ -38,19 +38,6 @@ const StreamMetaData = ({ isDefaultStream, stream, streamRuleTypes, permissions 
     <>
       <StreamMetaDataWrapper>
         <StreamThroughput streamId={stream.id} />.
-
-        <span>
-        &nbsp;Must match {verbalMatchingType} of the {stream.rules.length} configured stream&nbsp;
-          <Pluralize value={stream.rules.length} plural="rules" singular="rule" />.
-        </span>
-
-        {!isDefaultStream && (
-          <Button bsStyle="link"
-                  bsSize="xsmall"
-                  onClick={_onHandleToggle}>
-            {toggleText} stream rules
-          </Button>
-        )}
       </StreamMetaDataWrapper>
     </>
   );

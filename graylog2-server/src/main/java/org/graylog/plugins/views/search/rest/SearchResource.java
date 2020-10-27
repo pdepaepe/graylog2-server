@@ -177,7 +177,6 @@ public class SearchResource extends RestResource implements PluginRestResource {
         Search search = getSearch(id);
 
         search = search.addStreamsToQueriesWithoutStreams(this::loadAllAllowedStreamsForUser);
-
         guard(search);
 
         search = search.applyExecutionState(objectMapper, firstNonNull(executionState, Collections.emptyMap()));

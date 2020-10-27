@@ -26,7 +26,7 @@ const SupportSources = () => (
         <a href="https://community.ovh.com/c/platform/data-platforms" target="_blank">Community support</a>
       </li>
       <li>
-        <Icon name="fa fa-heart" type="brand" />&nbsp;&nbsp;
+        <Icon name="heart" />&nbsp;
         <a href="https://www.ovh.com/support/" target="_blank">OVH support</a>
       </li>
     </SourcesList>

@@ -182,7 +182,7 @@ public class UserServiceImplTest {
         final DBObject query = BasicDBObjectBuilder.start("_id", new ObjectId(id)).get();
         @SuppressWarnings("deprecation")
         final DBObject dbObject = mongoConnection.getDatabase().getCollection(UserImpl.COLLECTION_NAME).findOne(query);
-        assertThat(dbObject.get("username")).isEqualTo("TEST");
+        assertThat(dbObject.get("username")).isEqualTo("test");
         assertThat(dbObject.get("full_name")).isEqualTo("TEST");
         assertThat(dbObject.get("email")).isEqualTo("test@example.com");
         assertThat(dbObject.get("timezone")).isEqualTo("UTC");

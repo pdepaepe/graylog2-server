@@ -38,7 +38,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Api(value = "Field Types")
+@Api(value = "Field Types", description = "Return contextualized fields")
 @Path("/views/fields")
 @Produces(MediaType.APPLICATION_JSON)
 @RequiresAuthentication
@@ -55,7 +55,7 @@ public class FieldTypesResource extends RestResource implements PluginRestResour
     }
 
     @GET
-    @ApiOperation(value = "Retrieve the list of all fields present in the system")
+    @ApiOperation(value = "Get all known fields.", notes = "Retrieve the list of all fields present in the system")
     public Set<MappedFieldTypeDTO> allFieldTypes() {
         return mappedFieldTypesService.fieldTypesByStreamIds(permittedStreams.load(this::allowedToReadStream));
     }
@@ -65,7 +65,7 @@ public class FieldTypesResource extends RestResource implements PluginRestResour
     }
 
     @POST
-    @ApiOperation(value = "Retrieve the field list of a given set of streams")
+    @ApiOperation(value = "Get fields for given streams.", notes = "Retrieve the field list of a given set of streams")
     @NoAuditEvent("This is not changing any data")
     public Set<MappedFieldTypeDTO> byStreams(FieldTypesForStreamsRequest request) {
         checkStreamPermission(request.streams());

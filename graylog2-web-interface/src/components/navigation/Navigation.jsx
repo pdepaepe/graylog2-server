@@ -111,9 +111,11 @@ const Navigation = ({ location }: Props) => {
             <NavItem>Streams</NavItem>
           </LinkContainer>
 
-          <LinkContainer to={Routes.ALERTS.LIST}>
-            <NavItem>Alerts</NavItem>
-          </LinkContainer>
+          <IfPermitted permissions="buffers:read">
+            <LinkContainer to={Routes.ALERTS.LIST}>
+              <NavItem>Alerts</NavItem>
+            </LinkContainer>
+          </IfPermitted>
 
           <LinkContainer to={Routes.DASHBOARDS}>
             <NavItem>Dashboards</NavItem>

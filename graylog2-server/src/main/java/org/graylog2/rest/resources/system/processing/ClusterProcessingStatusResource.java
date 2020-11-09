@@ -20,10 +20,12 @@ import com.codahale.metrics.annotation.Timed;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog2.cluster.NodeService;
 import org.graylog2.rest.RemoteInterfaceProvider;
 import org.graylog2.rest.models.system.processing.ProcessingStatusSummary;
 import org.graylog2.shared.rest.resources.ProxiedResource;
+import org.graylog2.shared.security.RestPermissions;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -52,6 +54,7 @@ public class ClusterProcessingStatusResource extends ProxiedResource {
 
     @GET
     @Timed
+    @RequiresPermissions(RestPermissions.BUFFERS_READ)
     @ApiOperation(value = "Get processing status from all nodes in the cluster")
     public Map<String, Optional<ProcessingStatusSummary>> getStatus() {
         return getForAllNodes(RemoteSystemProcessingStatusResource::getStatus, createRemoteInterfaceProvider(RemoteSystemProcessingStatusResource.class));
@@ -60,6 +63,7 @@ public class ClusterProcessingStatusResource extends ProxiedResource {
     @GET
     @Path("/persisted")
     @Timed
+    @RequiresPermissions(RestPermissions.BUFFERS_READ)
     @ApiOperation(value = "Get persisted processing status from all nodes in the cluster")
     public Map<String, Optional<ProcessingStatusSummary>> getPersistedStatus() {
         return getForAllNodes(RemoteSystemProcessingStatusResource::getPersistedStatus, createRemoteInterfaceProvider(RemoteSystemProcessingStatusResource.class));

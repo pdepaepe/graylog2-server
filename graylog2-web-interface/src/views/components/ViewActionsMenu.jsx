@@ -11,7 +11,6 @@ import { Icon, HasOwnership } from 'components/common';
 import CSVExportModal from 'views/components/searchbar/csvexport/CSVExportModal';
 import DebugOverlay from 'views/components/DebugOverlay';
 import onSaveView from 'views/logic/views/OnSaveViewAction';
-import onSaveAsView from 'views/logic/views/OnSaveAsViewAction';
 import { ViewStore } from 'views/stores/ViewStore';
 import { SearchMetadataStore } from 'views/stores/SearchMetadataStore';
 import SearchMetadata from 'views/logic/search/SearchMetadata';
@@ -33,7 +32,6 @@ const _hasUndeclaredParameters = (searchMetadata: SearchMetadata) => searchMetad
 const ViewActionsMenu = ({ view, isNewView, metadata }) => {
   const currentUser = useContext(CurrentUserContext);
   const [debugOpen, setDebugOpen] = useState(false);
-  const [saveAsViewOpen, setSaveAsViewOpen] = useState(false);
   const [editViewOpen, setEditViewOpen] = useState(false);
   const [csvExportOpen, setCsvExportOpen] = useState(false);
   const hasUndeclaredParameters = _hasUndeclaredParameters(metadata);
@@ -55,11 +53,6 @@ const ViewActionsMenu = ({ view, isNewView, metadata }) => {
               data-testid="dashboard-save-button">
         <Icon name="save" /> Save
       </Button>
-      <Button onClick={() => setSaveAsViewOpen(true)}
-              disabled={hasUndeclaredParameters}
-              data-testid="dashboard-save-as-button">
-        <Icon name="copy" /> Save as
-      </Button>
       <DropdownButton title={<Icon name="ellipsis-h" />} id="query-tab-actions-dropdown" pullRight noCaret>
         <MenuItem onSelect={() => setEditViewOpen(true)} disabled={isNewView || !allowedToEdit}>
           <Icon name="edit" /> Edit metadata
@@ -72,13 +65,6 @@ const ViewActionsMenu = ({ view, isNewView, metadata }) => {
         </IfDashboard>
       </DropdownButton>
       {debugOpen && <DebugOverlay show onClose={() => setDebugOpen(false)} />}
-      {saveAsViewOpen && (
-        <ViewPropertiesModal show
-                             view={view.toBuilder().newId().build()}
-                             title="Save new dashboard"
-                             onClose={() => setSaveAsViewOpen(false)}
-                             onSave={(newView) => onSaveAsView(newView)} />
-      )}
       {editViewOpen && (
         <ViewPropertiesModal show
                              view={view}

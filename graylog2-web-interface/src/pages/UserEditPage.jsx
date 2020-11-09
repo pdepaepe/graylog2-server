@@ -42,7 +42,7 @@ const UserEditPage = ({ params }: Props) => {
 
   return (
     <DocumentTitle title={`Edit User ${loadedUser?.fullName ?? ''}`}>
-      <PageHeader title={<PageTitle fullName={loadedUser?.fullName} />}
+      <PageHeader title={<PageTitle fullName={loadedUser?.loginName} />}
                   subactions={(
                     <UserActionLinks username={username}
                                      userIsReadOnly={loadedUser?.readOnly ?? false} />

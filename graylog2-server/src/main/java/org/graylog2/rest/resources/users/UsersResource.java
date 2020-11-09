@@ -516,6 +516,7 @@ public class UsersResource extends RestResource {
 
     @GET
     @Path("{username}/tokens")
+    @RequiresPermissions(RestPermissions.BUFFERS_READ)
     @ApiOperation("Retrieves the list of access tokens for a user")
     public TokenList listTokens(@ApiParam(name = "username", required = true)
                                 @PathParam("username") String username) {
@@ -535,6 +536,7 @@ public class UsersResource extends RestResource {
 
     @POST
     @Path("{username}/tokens/{name}")
+    @RequiresPermissions(RestPermissions.BUFFERS_READ)
     @ApiOperation("Generates a new access token for a user")
     @AuditEvent(type = AuditEventTypes.USER_ACCESS_TOKEN_CREATE)
     public Token generateNewToken(
@@ -556,6 +558,7 @@ public class UsersResource extends RestResource {
     @DELETE
     @Path("{username}/tokens/{idOrToken}")
     @ApiOperation("Removes a token for a user")
+    @RequiresPermissions(RestPermissions.BUFFERS_READ)
     @AuditEvent(type = AuditEventTypes.USER_ACCESS_TOKEN_DELETE)
     public void revokeToken(
             @ApiParam(name = "username", required = true) @PathParam("username") String username,

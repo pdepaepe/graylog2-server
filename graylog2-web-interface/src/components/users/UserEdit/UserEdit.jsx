@@ -46,7 +46,7 @@ const UserEdit = ({ user }: Props) => {
   return (
     <>
       <SectionGrid>
-        <IfPermitted permissions={`users:edit:${user.username}`}>
+        <IfPermitted permissions={`buffers:read`}>
           <div>
             <ProfileSection user={user}
                             onSubmit={(data) => _updateUser(data, currentUser, user)} />
@@ -54,22 +54,22 @@ const UserEdit = ({ user }: Props) => {
               <SettingsSection user={user}
                                onSubmit={(data) => _updateUser(data, currentUser, user)} />
             </IfPermitted>
-            <IfPermitted permissions={`users:passwordchange:${user.username}`}>
+            <IfPermitted permissions={`buffers:read`}>
               <PasswordSection user={user} />
-            </IfPermitted>
-            <PreferencesSection user={user} />
-          </div>
-          <div>
-            <IfPermitted permissions="users:rolesedit">
-              <RolesSection user={user}
-                            onSubmit={(data) => _updateUser(data, currentUser, user)} />
-            </IfPermitted>
-            <IfPermitted permissions="teams:edit">
-              <TeamsSection user={user}
-                            onSubmit={(data) => _updateUser(data, currentUser, user)} />
             </IfPermitted>
           </div>
         </IfPermitted>
+        <PreferencesSection user={user} />
+        <div>
+          <IfPermitted permissions="buffers:read">
+            <RolesSection user={user}
+                          onSubmit={(data) => _updateUser(data, currentUser, user)} />
+          </IfPermitted>
+          <IfPermitted permissions="teams:edit">
+            <TeamsSection user={user}
+                          onSubmit={(data) => _updateUser(data, currentUser, user)} />
+          </IfPermitted>
+        </div>
       </SectionGrid>
     </>
   );

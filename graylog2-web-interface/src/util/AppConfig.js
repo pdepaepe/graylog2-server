@@ -37,7 +37,11 @@ const AppConfig = {
 
   customUsername() {
     return window.appConfig.customUsername;
-  },  
+  }, 
+  
+  badgeText() {
+    return window.appConfig.badgeText;
+  },
 
 };
 

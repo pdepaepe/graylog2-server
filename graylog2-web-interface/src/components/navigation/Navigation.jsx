@@ -26,6 +26,8 @@ import InactiveNavItem from './InactiveNavItem';
 import ScratchpadToggle from './ScratchpadToggle';
 import StyledNavbar from './Navigation.styles';
 
+import AppConfig from 'util/AppConfig';
+
 const _isActive = (requestPath, prefix) => {
   return requestPath.indexOf(appPrefixed(prefix)) === 0;
 };
@@ -129,6 +131,9 @@ const Navigation = ({ location }: Props) => {
         <NotificationBadge />
 
         <Nav navbar pullRight className="header-meta-nav">
+          {AppConfig.badgeText() ?
+            <NavItem style={{ paddingRight: '5px', fontWeight: 'bold' }}>{AppConfig.badgeText()}</NavItem>
+          : null}
           <GlobalThroughput />
           <InactiveNavItem className="dev-badge-wrap">
             <DevelopmentHeaderBadge />

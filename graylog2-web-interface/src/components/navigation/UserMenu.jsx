@@ -37,10 +37,10 @@ const UserMenu = ({ fullName, loginName, readOnly = true }: Props) => {
 
   return (
     <NavDropdown title={<Icon name="user" size="lg" />}
-                 aria-label={fullName}
+                 aria-label={loginName}
                  id="user-menu-dropdown"
                  noCaret>
-      <MenuItem header>{fullName}</MenuItem>
+      <MenuItem header>{loginName}</MenuItem>
       <MenuItem divider />
       <MenuItem header>
         <ThemeModeToggle />

@@ -101,7 +101,7 @@ const EmptyDashboardInfo = () => (
       <li><p>2. <b>Limit</b> the data to only the data points you want to see.</p></li>
       <li><p>3. <b>Visualize</b> the data. Does it answer your question?</p></li>
       <IfDashboard>
-        <li><p>4. <b>Share</b> the dashboard with your colleagues. Prepare it for <b>reuse</b> by using parameters (contained in <a href="https://www.graylog.org/graylog-enterprise-edition" target="_blank" rel="noopener noreferrer">Graylog Enterprise</a>).</p></li>
+        <li><p>4. <b>Share</b> the dashboard with your colleagues with <a href="https://docs.ovh.com/fr/logs-data-platform/roles/" target="_blank" rel="noopener noreferrer">LDP roles</a>.</p></li>
       </IfDashboard>
     </ul>
     <p>

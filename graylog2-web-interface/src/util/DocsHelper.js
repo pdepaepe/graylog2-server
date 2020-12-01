@@ -37,6 +37,7 @@ class DocsHelper {
   };
 
   DOCS_URL = 'https://docs.graylog.org/en/';
+  LDP_URL = 'https://docs.ovh.com/gb/en/logs-data-platform/';
 
   toString(path) {
     const version = Version.getMajorAndMinorVersion();
@@ -52,6 +53,11 @@ class DocsHelper {
   versionedDocsHomePage() {
     return this.toString('');
   }
+
+  quickStartLDPPage() {
+    return this.toStringLDP();
+  }
+  
 }
 
 const docsHelper = new DocsHelper();

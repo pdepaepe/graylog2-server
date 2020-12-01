@@ -97,10 +97,6 @@ const ServerUnavailablePage = ({ server }) => {
               Please verify that the server is healthy and working correctly.
             </p>
             <p>You will be automatically redirected to the previous page once we can connect to the server.</p>
-            <p>
-              Do you need a hand?{' '}
-              <a href="https://www.graylog.org/community-support" rel="noopener noreferrer" target="_blank">We can help you</a>.
-            </p>
             <div>
               <Button bsStyle="primary"
                       tabIndex={0}

@@ -230,6 +230,9 @@ public class StreamResource extends RestResource {
         final List<Stream> streams = new ArrayList<>(allStreams.size());
         for (Stream stream : allStreams) {
             if (isPermitted(RestPermissions.STREAMS_READ, stream.getId())) {
+                if (!isPermitted(RestPermissions.STREAMS_EDIT, stream.getId())) {
+                    stream.getStreamRules().clear();
+                }
                 streams.add(stream);
             }
         }
@@ -247,6 +250,9 @@ public class StreamResource extends RestResource {
         final List<Stream> streams = new ArrayList<>(enabledStreams.size());
         for (Stream stream : enabledStreams) {
             if (isPermitted(RestPermissions.STREAMS_READ, stream.getId())) {
+                if (!isPermitted(RestPermissions.STREAMS_EDIT, stream.getId())) {
+                    stream.getStreamRules().clear();
+                }
                 streams.add(stream);
             }
         }
@@ -266,8 +272,11 @@ public class StreamResource extends RestResource {
     public StreamResponse get(@ApiParam(name = "streamId", required = true)
                               @PathParam("streamId") @NotEmpty String streamId) throws NotFoundException {
         checkPermission(RestPermissions.STREAMS_READ, streamId);
-
-        return streamToResponse(streamService.load(streamId));
+        final Stream stream = streamService.load(streamId);
+        if (!isPermitted(RestPermissions.STREAMS_EDIT, stream.getId())) {
+            stream.getStreamRules().clear();
+        }
+        return streamToResponse(stream);
     }
 
     @PUT
@@ -327,6 +336,10 @@ public class StreamResource extends RestResource {
         }
 
         streamService.save(stream);
+
+        if (!isPermitted(RestPermissions.STREAMS_EDIT, stream.getId())) {
+            stream.getStreamRules().clear();
+        }
 
         return streamToResponse(stream);
     }

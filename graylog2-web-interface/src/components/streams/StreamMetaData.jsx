@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import CollapsibleStreamRuleList from 'components/streamrules/CollapsibleStreamRuleList';
 import { Pluralize } from 'components/common';
 import { Button } from 'components/graylog';
 
@@ -45,14 +44,6 @@ const StreamMetaData = ({ isDefaultStream, stream, streamRuleTypes, permissions 
         &nbsp;Must match {verbalMatchingType} of the {stream.rules.length} configured stream&nbsp;
           <Pluralize value={stream.rules.length} plural="rules" singular="rule" />.
         </span>
-
-        {!isDefaultStream && (
-          <Button bsStyle="link"
-                  bsSize="xsmall"
-                  onClick={_onHandleToggle}>
-            {toggleText} stream rules
-          </Button>
-        )}
       </StreamMetaDataWrapper>
 
       {!isDefaultStream && (

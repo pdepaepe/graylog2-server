@@ -41,8 +41,7 @@ const DashboardsPage = ({ dashboards: { list, pagination } }: Props) => {
       <span>
         <PageHeader title="Dashboards">
           <span>
-            Use dashboards to create specific views on your messages. Create a new dashboard here and add any graph or
-            chart you create in other parts of Graylog with one click.
+            Use dashboards to create specific views on your messages. 
           </span>
 
           <span>

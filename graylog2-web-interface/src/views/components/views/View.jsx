@@ -1,12 +1,11 @@
 // @flow strict
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 // $FlowFixMe: imports from core need to be fixed in flow
 import { Link } from 'components/graylog/router';
 import Routes from 'routing/Routes';
 import { EntityListItem } from 'components/common';
-import CurrentUserContext from 'contexts/CurrentUserContext';
 import UserTimezoneTimestamp from 'views/components/common/UserTimezoneTimestamp';
 import withPluginEntities from 'views/logic/withPluginEntities';
 
@@ -14,25 +13,11 @@ const formatTitle = (title, id, disabled = false) => (disabled
   ? <h2>{title}</h2>
   : <Link to={Routes.pluginRoute('DASHBOARDS_VIEWID')(id)}>{title}</Link>);
 
-const OwnerTag = ({ owner }) => {
-  const currentUser = useContext(CurrentUserContext);
-
-  if (!owner || owner === currentUser?.username) {
-    return <span>Last saved</span>;
-  }
-
-  return <span>Shared by {owner}, last saved</span>;
-};
-
-OwnerTag.propTypes = {
-  owner: PropTypes.string.isRequired,
-};
-
 // eslint-disable-next-line react/prop-types
 const Description = ({ description, owner, createdAt }) => (
   <>
     <div>{description || <i>No description given.</i>}</div>
-    <div style={{ color: 'darkgray' }}><OwnerTag owner={owner} /> at <UserTimezoneTimestamp dateTime={createdAt} /></div>
+    <div style={{ color: 'darkgray' }}>Last saved at <UserTimezoneTimestamp dateTime={createdAt} /></div>
   </>
 );
 

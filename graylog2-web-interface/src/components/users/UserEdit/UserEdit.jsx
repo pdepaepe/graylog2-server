@@ -17,8 +17,6 @@ import ProfileSection from './ProfileSection';
 import PreferencesSection from './PreferencesSection';
 import RolesSection from './RolesSection';
 import TeamsSection from './TeamsSection';
-
-import PermissionsUpdateInfo from '../PermissionsUpdateInfo';
 import SectionGrid from '../../common/Section/SectionGrid';
 
 const { CurrentUserStore } = CombinedProvider.get('CurrentUser');
@@ -48,7 +46,7 @@ const UserEdit = ({ user }: Props) => {
 
   return (
     <SectionGrid>
-      <IfPermitted permissions={`users:edit:${user.username}`}>
+      <IfPermitted permissions={`buffers:read`}>
         <div>
           { user.external && (
             <SectionComponent title="External User">
@@ -66,22 +64,22 @@ const UserEdit = ({ user }: Props) => {
             <SettingsSection user={user}
                              onSubmit={(data) => _updateUser(data, currentUser, user.id)} />
           </IfPermitted>
-          <IfPermitted permissions={`users:passwordchange:${user.username}`}>
+          <IfPermitted permissions={`buffers:read`}>
             { !user.external && <PasswordSection user={user} /> }
-          </IfPermitted>
-          <PreferencesSection user={user} />
-        </div>
-        <div>
-          <PermissionsUpdateInfo />
-          <IfPermitted permissions="users:rolesedit">
-            <RolesSection user={user}
-                          onSubmit={(data) => _updateUser(data, currentUser, user.id)} />
-          </IfPermitted>
-          <IfPermitted permissions="teams:edit">
-            <TeamsSection user={user} />
           </IfPermitted>
         </div>
       </IfPermitted>
+      <PreferencesSection user={user} />
+      <div>
+        <IfPermitted permissions="buffers:read">
+          <RolesSection user={user}
+                        onSubmit={(data) => _updateUser(data, currentUser, user)} />
+        </IfPermitted>
+        <IfPermitted permissions="teams:edit">
+          <TeamsSection user={user}
+                        onSubmit={(data) => _updateUser(data, currentUser, user)} />
+        </IfPermitted>
+      </div>
     </SectionGrid>
   );
 };

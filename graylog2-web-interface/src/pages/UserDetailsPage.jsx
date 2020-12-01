@@ -8,7 +8,6 @@ import DocsHelper from 'util/DocsHelper';
 import UsersDomain from 'domainActions/users/UsersDomain';
 import UserDetails from 'components/users/UserDetails';
 import UserOverviewLinks from 'components/users/navigation/UserOverviewLinks';
-import UserActionLinks from 'components/users/navigation/UserActionLinks';
 import DocumentationLink from 'components/support/DocumentationLink';
 
 type Props = {
@@ -37,11 +36,7 @@ const UserDetailsPage = ({ params }: Props) => {
 
   return (
     <DocumentTitle title={`User Details ${loadedUser?.fullName ?? ''}`}>
-      <PageHeader title={<PageTitle fullName={loadedUser?.fullName} />}
-                  subactions={(
-                    <UserActionLinks userId={userId}
-                                     userIsReadOnly={loadedUser?.readOnly ?? false} />
-                  )}>
+      <PageHeader title={<PageTitle fullName={loadedUser?.fullName} />}>
         <span>
           Overview of details like profile information, settings, teams and roles.
         </span>

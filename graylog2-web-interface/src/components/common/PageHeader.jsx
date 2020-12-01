@@ -129,12 +129,6 @@ class PageHeader extends React.Component<Props> {
               </p>
             )}
 
-            {children[1] && (
-              <SupportLink>
-                {children[1]}
-              </SupportLink>
-            )}
-
             {subactions && (
               <div className="pull-right visible-lg visible-md">
                 {subactions}

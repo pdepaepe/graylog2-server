@@ -4,12 +4,12 @@ import styled, { css } from 'styled-components';
 
 import { Link, LinkContainer } from 'components/graylog/router';
 import { Button, Tooltip } from 'components/graylog';
+import {OverlayElement, Icon} from 'components/common';
 import StreamRuleForm from 'components/streamrules/StreamRuleForm';
 import { isPermitted, isAnyPermitted } from 'util/PermissionsMixin';
 import UserNotification from 'util/UserNotification';
 import StoreProvider from 'injection/StoreProvider';
 import Routes from 'routing/Routes';
-
 import StreamMetaData from './StreamMetaData';
 import StreamControls from './StreamControls';
 import StreamStateBadge from './StreamStateBadge';
@@ -252,13 +252,6 @@ class Stream extends React.Component {
                           onSubmit={this._onSaveStreamRule}
                           streamRuleTypes={streamRuleTypes} />
         ) }
-        { showEntityShareModal && (
-          <EntityShareModal entityId={stream.id}
-                            entityType="stream"
-                            entityTitle={stream.title}
-                            description="Search for a User or Team to add as collaborator on this stream."
-                            onClose={this._closeEntityShareModal} />
-        )}
       </StreamListItem>
     );
   }

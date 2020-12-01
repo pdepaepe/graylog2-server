@@ -134,7 +134,8 @@ public class ViewsResource extends RestResource implements PluginRestResource {
         final ViewDTO view = loadView(id);
         if (isPermitted(ViewsRestPermissions.VIEW_READ, id)
                 || (view.type().equals(ViewDTO.Type.SEARCH) && view.owner().equals(user.getName()))
-                || (view.type().equals(ViewDTO.Type.DASHBOARD) && isPermitted(RestPermissions.DASHBOARDS_READ, view.id()))) {            return view;
+                || (view.type().equals(ViewDTO.Type.DASHBOARD) && isPermitted(RestPermissions.DASHBOARDS_READ, view.id()))) {
+                    return view;
         }
 
         throw viewNotFoundException(id);
@@ -158,15 +159,28 @@ public class ViewsResource extends RestResource implements PluginRestResource {
     @AuditEvent(type = ViewsAuditEventTypes.VIEW_UPDATE)
     public ViewDTO update(@ApiParam(name = "id") @PathParam("id") @NotEmpty String id,
                           @ApiParam @Valid ViewDTO dto) {
+        ViewDTO dto2 = dto;
         if (dto.type().equals(ViewDTO.Type.DASHBOARD)) {
             checkAnyPermission(new String[]{
-                    ViewsRestPermissions.VIEW_EDIT,
-                    RestPermissions.DASHBOARDS_EDIT
+                ViewsRestPermissions.VIEW_EDIT,
+                RestPermissions.DASHBOARDS_EDIT
             }, id);
+            if (!isPermitted(RestPermissions.BUFFERS_READ)) {
+                final ViewDTO view = loadView(id);
+                dto2 = dto.toBuilder()
+                .id(id)
+                .title(view.title())
+                .summary(view.summary())
+                .description(view.description())
+                .build();
+            } else {
+                dto2 = dto.toBuilder().id(id).build();
+            }
         } else {
             checkPermission(ViewsRestPermissions.VIEW_EDIT, id);
+            dto2 = dto.toBuilder().id(id).build();
         }
-        return dbService.update(dto.toBuilder().id(id).build());
+        return dbService.update(dto2);
     }
 
     @PUT

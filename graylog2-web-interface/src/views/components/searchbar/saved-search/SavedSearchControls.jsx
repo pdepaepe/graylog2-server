@@ -13,7 +13,6 @@ import UserNotification from 'util/UserNotification';
 import { ViewStore, ViewActions } from 'views/stores/ViewStore';
 import View from 'views/logic/views/View';
 import type { ViewStoreState } from 'views/stores/ViewStore';
-import onSaveView from 'views/logic/views/OnSaveViewAction';
 import ViewLoaderContext from 'views/logic/ViewLoaderContext';
 import NewViewLoaderContext from 'views/logic/NewViewLoaderContext';
 import CSVExportModal from 'views/components/searchbar/csvexport/CSVExportModal';
@@ -21,7 +20,6 @@ import ViewTypeLabel from 'views/components/ViewTypeLabel';
 import CurrentUserContext from 'contexts/CurrentUserContext';
 import * as Permissions from 'views/Permissions';
 import type { UserJSON } from 'logic/users/User';
-import ViewPropertiesModal from 'views/components/views/ViewPropertiesModal';
 import { loadAsDashboard, loadNewSearch } from 'views/logic/views/Actions';
 
 import SavedSearchForm from './SavedSearchForm';
@@ -36,7 +34,6 @@ type State = {
   showForm: boolean,
   showList: boolean,
   showCSVExport: boolean,
-  showMetadataEdit: boolean,
   newTitle: string,
 };
 
@@ -66,7 +63,6 @@ class SavedSearchControls extends React.Component<Props, State> {
     const { view } = viewStoreState;
 
     this.state = {
-      showMetadataEdit: false,
       showCSVExport: false,
       showForm: false,
       showList: false,
@@ -90,12 +86,6 @@ class SavedSearchControls extends React.Component<Props, State> {
     const { showCSVExport } = this.state;
 
     this.setState({ showCSVExport: !showCSVExport });
-  };
-
-  toggleMetadataEdit = () => {
-    const { showMetadataEdit } = this.state;
-
-    this.setState({ showMetadataEdit: !showMetadataEdit });
   };
 
   onChangeTitle = (e: SyntheticInputEvent<HTMLInputElement>) => {
@@ -186,7 +176,7 @@ class SavedSearchControls extends React.Component<Props, State> {
   };
 
   render() {
-    const { showForm, showList, newTitle, showCSVExport, showMetadataEdit } = this.state;
+    const { showForm, showList, newTitle, showCSVExport } = this.state;
     const { viewStoreState: { view, dirty }, theme } = this.props;
 
     const loaded = (view && view.id);
@@ -241,10 +231,6 @@ class SavedSearchControls extends React.Component<Props, State> {
                                        toggleModal={this.toggleListModal} />
                     )}
                     <DropdownButton title={<Icon name="ellipsis-h" />} id="search-actions-dropdown" pullRight noCaret>
-                      <MenuItem onSelect={this.toggleMetadataEdit} disabled={!isAllowedToEdit}>
-                        <Icon name="edit" /> Edit metadata
-                      </MenuItem>
-                      <MenuItem onSelect={this._loadAsDashboard}><Icon name="tachometer-alt" /> Export to dashboard</MenuItem>
                       <MenuItem onSelect={this.toggleCSVExport}><Icon name="cloud-download-alt" /> Export to CSV</MenuItem>
                       <MenuItem disabled={disableReset} onSelect={() => loadNewView()} data-testid="reset-search">
                         <Icon name="eraser" /> Reset search
@@ -252,13 +238,6 @@ class SavedSearchControls extends React.Component<Props, State> {
                     </DropdownButton>
                     {showCSVExport && (
                       <CSVExportModal view={view} closeModal={this.toggleCSVExport} />
-                    )}
-                    {showMetadataEdit && (
-                      <ViewPropertiesModal show
-                                           view={view}
-                                           title="Editing saved search"
-                                           onClose={this.toggleMetadataEdit}
-                                           onSave={onSaveView} />
                     )}
                   </ButtonGroup>
                 </div>

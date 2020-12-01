@@ -53,7 +53,7 @@ const StreamsPage = createReactClass({
           <PageHeader title="Streams">
             <span>
               You can route incoming messages into streams by applying rules against them. Messages matching
-              the rules of a stream are routed into it. A message can also be routed into multiple streams.
+              the rules of a stream are routed into it.
             </span>
 
             <span>

@@ -12,8 +12,6 @@ import SettingsSection from './SettingsSection';
 import SharedEntitiesSection from './SharedEntitiesSection';
 import TeamsSection from './TeamsSection';
 
-import PermissionsUpdateInfo from '../PermissionsUpdateInfo';
-
 type Props = {
   user: ?User,
 };
@@ -35,7 +33,6 @@ const UserDetails = ({ user }: Props) => {
             <PreferencesSection user={user} />
           </div>
           <div>
-            <PermissionsUpdateInfo />
             <IfPermitted permissions={`users:rolesedit:${user.username}`}>
               <RolesSection user={user} />
             </IfPermitted>

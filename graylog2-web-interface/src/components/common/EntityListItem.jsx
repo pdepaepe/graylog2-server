@@ -49,9 +49,11 @@ const EntityListItem = ({ actions, contentRow, createdFromContentPack, descripti
     <StyledListItem>
       <Row className="row-sm">
         <Col md={12}>
-          <div className="pull-right hidden-xs">
-            {actionsContainer}
-          </div>
+          {actions && (
+            <div className="pull-right hidden-xs">
+              {actionsContainer}
+            </div>
+          )}
           <h2>{title} {wrappedTitleSuffix}</h2>
           {(createdFromContentPack || description)
               && (
@@ -62,16 +64,17 @@ const EntityListItem = ({ actions, contentRow, createdFromContentPack, descripti
               </div>
               )}
         </Col>
-
-        <Col sm={12} lgHidden mdHidden smHidden>
-          {actionsContainer}
-        </Col>
+        {actions && (
+          <Col sm={12} lgHidden mdHidden smHidden>
+            {actionsContainer}
+          </Col>
+        )}
       </Row>
 
       {contentRow && (
-      <Row className="row-sm">
-        {contentRow}
-      </Row>
+        <Row className="row-sm">
+          {contentRow}
+        </Row>
       )}
     </StyledListItem>
   );

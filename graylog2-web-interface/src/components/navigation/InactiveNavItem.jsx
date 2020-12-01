@@ -9,6 +9,7 @@ const StyledInactiveNav = styled(NavItem)`
     &:hover,
     &:focus {
       background: transparent;
+      cursor: default;
     }
   }
 `;

@@ -26,7 +26,6 @@ const Footer = () => {
     <StyledFooter>
       Graylog {Version.getFullVersion()}
         <IfPermitted permissions="buffers:read">
-            on {system.hostname} ({jvm.info})
           <ExtendedFooter />
         </IfPermitted>
     </StyledFooter>

@@ -72,7 +72,6 @@ public class ClusterSystemResource extends ProxiedResource {
 
     @GET
     @Timed
-    @RequiresPermissions(RestPermissions.BUFFERS_READ)
     @ApiOperation(value = "Get system overview of all Graylog nodes")
     public Map<String, Optional<SystemOverviewResponse>> get() {
         return getForAllNodes(RemoteSystemResource::system, createRemoteInterfaceProvider(RemoteSystemResource.class));
@@ -81,6 +80,7 @@ public class ClusterSystemResource extends ProxiedResource {
     @GET
     @Timed
     @ApiOperation(value = "Get JVM information of the given node")
+    @RequiresPermissions(RestPermissions.BUFFERS_READ)
     @Path("{nodeId}/jvm")
     public SystemJVMResponse jvm(@ApiParam(name = "nodeId", value = "The id of the node to retrieve JVM information.", required = true)
                                  @PathParam("nodeId") String nodeId) throws IOException, NodeNotFoundException {

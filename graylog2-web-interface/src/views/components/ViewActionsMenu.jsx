@@ -5,11 +5,9 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 
 import connect from 'stores/connect';
 import { isPermitted } from 'util/PermissionsMixin';
-import AppConfig from 'util/AppConfig';
 import { DropdownButton, MenuItem, Button, ButtonGroup } from 'components/graylog';
 import { Icon } from 'components/common';
 import CSVExportModal from 'views/components/searchbar/csvexport/CSVExportModal';
-import DebugOverlay from 'views/components/DebugOverlay';
 import onSaveView from 'views/logic/views/OnSaveViewAction';
 import { ViewStore } from 'views/stores/ViewStore';
 import { SearchMetadataStore } from 'views/stores/SearchMetadataStore';
@@ -18,9 +16,7 @@ import * as Permissions from 'views/Permissions';
 import View from 'views/logic/views/View';
 import type { UserJSON } from 'logic/users/User';
 import CurrentUserContext from 'contexts/CurrentUserContext';
-import ViewTypeLabel from 'views/components/ViewTypeLabel';
 
-import ViewPropertiesModal from './views/ViewPropertiesModal';
 import IfDashboard from './dashboard/IfDashboard';
 import BigDisplayModeConfiguration from './dashboard/BigDisplayModeConfiguration';
 
@@ -31,20 +27,9 @@ const _hasUndeclaredParameters = (searchMetadata: SearchMetadata) => searchMetad
 
 const ViewActionsMenu = ({ view, isNewView, metadata }) => {
   const currentUser = useContext(CurrentUserContext);
-  const [debugOpen, setDebugOpen] = useState(false);
-  const [editViewOpen, setEditViewOpen] = useState(false);
   const [csvExportOpen, setCsvExportOpen] = useState(false);
   const hasUndeclaredParameters = _hasUndeclaredParameters(metadata);
   const allowedToEdit = _isAllowedToEdit(view, currentUser);
-  const viewTypeLabel = ViewTypeLabel({ type: view.type });
-  const debugOverlay = AppConfig.gl2DevMode() && (
-    <>
-      <MenuItem divider />
-      <MenuItem onSelect={() => setDebugOpen(true)}>
-        <Icon name="code" /> Debug
-      </MenuItem>
-    </>
-  );
 
   return (
     <ButtonGroup>
@@ -54,24 +39,12 @@ const ViewActionsMenu = ({ view, isNewView, metadata }) => {
         <Icon name="save" /> Save
       </Button>
       <DropdownButton title={<Icon name="ellipsis-h" />} id="query-tab-actions-dropdown" pullRight noCaret>
-        <MenuItem onSelect={() => setEditViewOpen(true)} disabled={isNewView || !allowedToEdit}>
-          <Icon name="edit" /> Edit metadata
-        </MenuItem>
         <MenuItem onSelect={() => setCsvExportOpen(true)}><Icon name="cloud-download-alt" /> Export to CSV</MenuItem>
-        {debugOverlay}
         <IfDashboard>
           <MenuItem divider />
           <BigDisplayModeConfiguration view={view} disabled={isNewView} />
         </IfDashboard>
       </DropdownButton>
-      {debugOpen && <DebugOverlay show onClose={() => setDebugOpen(false)} />}
-      {editViewOpen && (
-        <ViewPropertiesModal show
-                             view={view}
-                             title="Editing dashboard"
-                             onClose={() => setEditViewOpen(false)}
-                             onSave={onSaveView} />
-      )}
       {csvExportOpen && <CSVExportModal view={view} closeModal={() => setCsvExportOpen(false)} />}
     </ButtonGroup>
   );

@@ -17,11 +17,12 @@ const SessionActions = ActionsProvider.getActions('Session');
 
 type Props = {
   fullName: string,
-  userId: string,
+  loginName: string,
   readOnly: boolean,
+  userId: string,
 };
 
-const UserMenu = ({ fullName, readOnly = true, userId }: Props) => {
+const UserMenu = ({ fullName, loginName, readOnly = true, userId }: Props) => {
   const route = readOnly
     ? Routes.SYSTEM.USERS.show(userId)
     : Routes.SYSTEM.USERS.edit(userId);
@@ -55,8 +56,9 @@ const UserMenu = ({ fullName, readOnly = true, userId }: Props) => {
 };
 
 UserMenu.propTypes = {
-  userId: PropTypes.string.isRequired,
+  loginName: PropTypes.string.isRequired,
   fullName: PropTypes.string.isRequired,
+  userId: PropTypes.string.isRequired,
 };
 
 export default UserMenu;

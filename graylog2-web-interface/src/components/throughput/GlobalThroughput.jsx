@@ -16,12 +16,21 @@ const ThroughputNavItem = styled(NavItem)`
     display: flex !important;
     align-items: center;
     height: 50px;
-
+    
     @media (max-width: 991px) {
       height: auto;
       display: block;
     }
   }
+
+  .navbar-default .navbar-nav > & > a {
+    &:hover,
+    &:focus {
+      background: transparent;
+      cursor: default;
+    }
+  } 
+
 `;
 
 const ContentWrap = styled.strong`

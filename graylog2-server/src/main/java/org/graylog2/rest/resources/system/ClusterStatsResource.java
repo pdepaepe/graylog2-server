@@ -20,6 +20,7 @@ import com.codahale.metrics.annotation.Timed;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog2.shared.rest.resources.RestResource;
 import org.graylog2.system.stats.ClusterStats;
 import org.graylog2.system.stats.ClusterStatsService;
@@ -47,6 +48,7 @@ public class ClusterStatsResource extends RestResource {
 
     @GET
     @Timed
+    @RequiresPermissions(RestPermissions.BUFFERS_READ)
     @ApiOperation(value = "Cluster status information.",
             notes = "This resource returns information about the Graylog cluster.")
     public ClusterStats systemStats() {
@@ -56,6 +58,7 @@ public class ClusterStatsResource extends RestResource {
     @GET
     @Path("/elasticsearch")
     @Timed
+    @RequiresPermissions(RestPermissions.BUFFERS_READ)
     @ApiOperation(value = "Elasticsearch information.",
             notes = "This resource returns information about the Elasticsearch Cluster.")
     public ElasticsearchStats elasticsearchStats() {
@@ -65,6 +68,7 @@ public class ClusterStatsResource extends RestResource {
     @GET
     @Path("/mongo")
     @Timed
+    @RequiresPermissions(RestPermissions.BUFFERS_READ)
     @ApiOperation(value = "MongoDB information.",
             notes = "This resource returns information about MongoDB.")
     public MongoStats mongoStats() {

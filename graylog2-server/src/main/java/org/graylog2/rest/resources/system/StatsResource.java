@@ -20,7 +20,9 @@ import com.codahale.metrics.annotation.Timed;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog2.shared.rest.resources.RestResource;
+import org.graylog2.shared.security.RestPermissions;
 import org.graylog2.shared.system.stats.StatsService;
 import org.graylog2.shared.system.stats.SystemStats;
 import org.graylog2.shared.system.stats.fs.FsStats;
@@ -49,6 +51,7 @@ public class StatsResource extends RestResource {
 
     @GET
     @Timed
+    @RequiresPermissions(RestPermissions.BUFFERS_READ)
     @ApiOperation(value = "System information about this node.",
             notes = "This resource returns information about the system this node is running on.")
     public SystemStats systemStats() {
@@ -58,6 +61,7 @@ public class StatsResource extends RestResource {
     @GET
     @Path("/fs")
     @Timed
+    @RequiresPermissions(RestPermissions.BUFFERS_READ)
     @ApiOperation(value = "Filesystem information about this node.",
             notes = "This resource returns information about the filesystems of this node.")
     public FsStats fsStats() {
@@ -67,6 +71,7 @@ public class StatsResource extends RestResource {
     @GET
     @Path("/jvm")
     @Timed
+    @RequiresPermissions(RestPermissions.BUFFERS_READ)
     @ApiOperation(value = "JVM information about this node.",
             notes = "This resource returns information about the Java Virtual Machine of this node.")
     public JvmStats jvmStats() {
@@ -76,6 +81,7 @@ public class StatsResource extends RestResource {
     @GET
     @Path("/network")
     @Timed
+    @RequiresPermissions(RestPermissions.BUFFERS_READ)
     @ApiOperation(value = "Networking information about this node.",
             notes = "This resource returns information about the networking system this node is running with.")
     public NetworkStats networkStats() {
@@ -85,6 +91,7 @@ public class StatsResource extends RestResource {
     @GET
     @Path("/os")
     @Timed
+    @RequiresPermissions(RestPermissions.BUFFERS_READ)
     @ApiOperation(value = "OS information about this node.",
             notes = "This resource returns information about the operating system this node is running on.")
     public OsStats osStats() {
@@ -94,6 +101,7 @@ public class StatsResource extends RestResource {
     @GET
     @Path("/process")
     @Timed
+    @RequiresPermissions(RestPermissions.BUFFERS_READ)
     @ApiOperation(value = "Process information about this node.",
             notes = "This resource returns information about the process this node is running as.")
     public ProcessStats processStats() {

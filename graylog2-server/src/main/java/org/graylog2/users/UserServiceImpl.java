@@ -154,14 +154,16 @@ public class UserServiceImpl extends PersistedServiceImpl implements UserService
     public User load(final String username) {
         LOG.debug("Loading user {}", username);
 
+        final String lowercaseUsername = username.toLowerCase(Locale.ENGLISH).trim();
+
         // special case for the locally defined user, we don't store that in MongoDB.
-        if (!configuration.isRootUserDisabled() && configuration.getRootUsername().equals(username)) {
-            LOG.debug("User {} is the built-in admin user", username);
+        if (!configuration.isRootUserDisabled() && configuration.getRootUsername().toLowerCase(Locale.ENGLISH).equals(lowercaseUsername)) {
+            LOG.debug("User {} is the built-in admin user", lowercaseUsername);
             return userFactory.createLocalAdminUser(roleService.getAdminRoleObjectId());
         }
 
         final DBObject query = new BasicDBObject();
-        query.put(UserImpl.USERNAME, username);
+        query.put(UserImpl.USERNAME, lowercaseUsername);
 
         final List<DBObject> result = query(UserImpl.class, query);
         if (result == null || result.isEmpty()) {
@@ -169,7 +171,7 @@ public class UserServiceImpl extends PersistedServiceImpl implements UserService
         }
 
         if (result.size() > 1) {
-            final String msg = "There was more than one matching user for username " + username + ". This should never happen.";
+            final String msg = "There was more than one matching user for username " + lowercaseUsername + ". This should never happen.";
             LOG.error(msg);
             throw new RuntimeException(msg);
         }

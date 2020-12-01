@@ -5,7 +5,7 @@ import URI from 'urijs';
 
 import URLUtils from 'util/URLUtils';
 import StoreProvider from 'injection/StoreProvider';
-import { DocumentTitle, ExternalLinkButton, PageHeader, Spinner } from 'components/common';
+import { DocumentTitle, ExternalLinkButton, PageHeader, Spinner, IfPermitted } from 'components/common';
 import { NodesList } from 'components/nodes';
 
 const CurrentUserStore = StoreProvider.getStore('CurrentUser');
@@ -65,7 +65,9 @@ const NodesPage = createReactClass({
               {this._renderGlobalAPIButton()}
             </span>
           </PageHeader>
-          <NodesList permissions={currentUser.permissions} nodes={nodes} />
+          <IfPermitted permissions="buffers:read">
+            <NodesList permissions={currentUser.permissions} nodes={nodes} />
+          </IfPermitted>
         </div>
       </DocumentTitle>
     );

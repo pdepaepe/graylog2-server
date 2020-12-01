@@ -285,7 +285,6 @@ public class RestPermissions implements PluginPermissions {
             DECORATORS_READ,
             FIELDNAMES_READ,
             INDEXERCLUSTER_READ,
-            JVMSTATS_READ,
             MESSAGECOUNT_READ,
             MESSAGES_ANALYZE,
             MESSAGES_READ,

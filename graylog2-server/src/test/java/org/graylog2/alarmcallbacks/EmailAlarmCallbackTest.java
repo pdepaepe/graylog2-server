@@ -61,7 +61,7 @@ public class EmailAlarmCallbackTest {
     @Test
     public void checkConfigurationSucceedsWithValidConfiguration() throws Exception {
         final Map<String, Object> configMap = ImmutableMap.of(
-                "sender", "graylog@example.org",
+                "sender", "alert@logs.ovh.com",
                 "subject", "Graylog alert",
                 "body", "foobar",
                 "user_receivers", Collections.emptyList(),
@@ -109,7 +109,7 @@ public class EmailAlarmCallbackTest {
     @Test
     public void checkConfigurationFailsWithoutSubject() throws Exception {
         final Map<String, Object> configMap = ImmutableMap.of(
-                "sender", "graylog@example.org",
+                "sender", "alert@logs.ovh.com",
                 "body", "foobar",
                 "user_receivers", Collections.emptyList(),
                 "email_receivers", Collections.emptyList()

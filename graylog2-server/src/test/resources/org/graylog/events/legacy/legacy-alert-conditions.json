@@ -270,7 +270,7 @@
       "configuration" : {
         "user_receivers" : [],
         "body" : "##########\nAlert Description: ${check_result.resultDescription}\nDate: ${check_result.triggeredAt}\nStream ID: ${stream.id}\nStream title: ${stream.title}\nStream description: ${stream.description}\nAlert Condition Title: ${alertCondition.title}\n${if stream_url}Stream URL: ${stream_url}${end}\n\nTriggered condition: ${check_result.triggeredCondition}\n##########\n\n${if backlog}Last messages accounting for this alert:\n${foreach backlog message}${message}\n\n${end}${else}<No backlog>\n${end}\n",
-        "sender" : "graylog@example.org",
+        "sender" : "alert@logs.ovh.com",
         "subject" : "Graylog alert for stream: ${stream.title}: ${check_result.resultDescription}",
         "email_receivers" : ["jane@example.org"]
       },

@@ -93,19 +93,22 @@ public class ViewsResource extends RestResource implements PluginRestResource {
                                                       required = true,
                                                       allowableValues = "id,title,created_at") @DefaultValue(ViewDTO.FIELD_TITLE) @QueryParam("sort") String sortField,
                                             @ApiParam(name = "order", value = "The sort direction", allowableValues = "asc, desc") @DefaultValue("asc") @QueryParam("order") String order,
-                                            @ApiParam(name = "query") @QueryParam("query") String query) {
+                                            @ApiParam(name = "query") @QueryParam("query") String query,
+                                            @Context UserContext userContext) {
 
         if (!ViewDTO.SORT_FIELDS.contains(sortField.toLowerCase(ENGLISH))) {
             sortField = ViewDTO.FIELD_TITLE;
         }
+
+        final User user = userContext.getUser();
 
         try {
             final SearchQuery searchQuery = searchQueryParser.parse(query);
             final PaginatedList<ViewDTO> result = dbService.searchPaginated(
                     searchQuery,
                     view -> isPermitted(ViewsRestPermissions.VIEW_READ, view.id())
-                            || (view.type().equals(ViewDTO.Type.DASHBOARD) && isPermitted(RestPermissions.DASHBOARDS_READ, view.id())),
-                    order,
+                            || (view.type().equals(ViewDTO.Type.SEARCH) && view.owner().equals(user.getName()))
+                            || (view.type().equals(ViewDTO.Type.DASHBOARD) && isPermitted(RestPermissions.DASHBOARDS_READ, view.id())),                    order,
                     sortField,
                     page,
                     perPage);
@@ -119,7 +122,7 @@ public class ViewsResource extends RestResource implements PluginRestResource {
     @GET
     @Path("{id}")
     @ApiOperation("Get a single view")
-    public ViewDTO get(@ApiParam(name = "id") @PathParam("id") @NotEmpty String id) {
+    public ViewDTO get(@ApiParam(name = "id") @PathParam("id") @NotEmpty String id, @Context UserContext userContext) {
         if ("default".equals(id)) {
             // If the user is not permitted to access the default view, return a 404
             return dbService.getDefault()
@@ -127,10 +130,11 @@ public class ViewsResource extends RestResource implements PluginRestResource {
                     .orElseThrow(() -> new NotFoundException("Default view doesn't exist"));
         }
 
+        final User user = userContext.getUser();
         final ViewDTO view = loadView(id);
         if (isPermitted(ViewsRestPermissions.VIEW_READ, id)
-                || (view.type().equals(ViewDTO.Type.DASHBOARD) && isPermitted(RestPermissions.DASHBOARDS_READ, view.id()))) {
-            return view;
+                || (view.type().equals(ViewDTO.Type.SEARCH) && view.owner().equals(user.getName()))
+                || (view.type().equals(ViewDTO.Type.DASHBOARD) && isPermitted(RestPermissions.DASHBOARDS_READ, view.id()))) {            return view;
         }
 
         throw viewNotFoundException(id);

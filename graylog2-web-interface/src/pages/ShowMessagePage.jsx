@@ -13,7 +13,6 @@ import MessageDetail from 'views/components/messagelist/MessageDetail';
 import withParams from 'routing/withParams';
 
 const NodesActions = ActionsProvider.getActions('Nodes');
-const InputsActions = ActionsProvider.getActions('Inputs');
 const MessagesActions = ActionsProvider.getActions('Messages');
 const StreamsStore = StoreProvider.getStore('Streams');
 
@@ -29,7 +28,6 @@ const ShowMessagePage = ({ params: { index, messageId } }: Props) => {
   }
 
   const [message, setMessage] = useState();
-  const [inputs, setInputs] = useState(Immutable.Map);
   const [streams, setStreams] = useState();
   const [allStreams, setAllStreams] = useState();
 
@@ -39,17 +37,9 @@ const ShowMessagePage = ({ params: { index, messageId } }: Props) => {
     MessagesActions.loadMessage(index, messageId)
       .then((_message) => {
         setMessage(_message);
-
-        return _message.source_input_id ? InputsActions.get(_message.source_input_id) : Promise.resolve();
-      })
-      .then((input) => {
-        if (input) {
-          const newInputs = Immutable.Map({ [input.id]: input });
-
-          setInputs(newInputs);
-        }
+        return Promise.resolve();
       });
-  }, [index, messageId, setMessage, setInputs]);
+  }, [index, messageId, setMessage]);
 
   useEffect(() => {
     StreamsStore.listStreams().then((newStreams) => {
@@ -64,8 +54,7 @@ const ShowMessagePage = ({ params: { index, messageId } }: Props) => {
 
   const isLoaded = useMemo(() => (message !== undefined
     && streams !== undefined
-    && inputs !== undefined
-    && allStreams !== undefined), [message, streams, inputs, allStreams]);
+    && allStreams !== undefined), [message, streams, allStreams]);
 
   if (isLoaded) {
     return (
@@ -78,7 +67,7 @@ const ShowMessagePage = ({ params: { index, messageId } }: Props) => {
                              allStreams={allStreams}
                              disableSurroundingSearch
                              disableFieldActions
-                             inputs={inputs}
+                             inputs={Immutable.Map()}
                              message={message} />
             </InteractiveContext.Provider>
           </Col>

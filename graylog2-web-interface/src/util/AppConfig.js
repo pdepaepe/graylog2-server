@@ -39,6 +39,10 @@ const AppConfig = {
     return window.appConfig.customUsername;
   },
 
+  badgeText() {
+    return window.appConfig.badgeText;
+  },
+
 };
 
 export default AppConfig;

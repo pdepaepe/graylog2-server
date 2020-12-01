@@ -3,4 +3,5 @@ window.appConfig = {
   gl2AppPathPrefix: '${appPathPrefix}',
   rootTimeZone: '${rootTimeZone}',
   customUsername: '${customUsername}',
+  badgeColor: '${badgeColor}',
 };

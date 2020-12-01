@@ -99,7 +99,9 @@ const SystemMenu = ({ location }) => {
       <IfPermitted permissions={['clusterconfigentry:read']}>
         <NavigationLink path={Routes.SYSTEM.CONFIGURATIONS} description="Configurations" />
       </IfPermitted>
-      <NavigationLink path={Routes.SYSTEM.NODES.LIST} description="Nodes" />
+      <IfPermitted permissions={['buffers:read']}>
+        <NavigationLink path={Routes.SYSTEM.NODES.LIST} description="Nodes" />
+      </IfPermitted>
       <IfPermitted permissions={['inputs:read']}>
         <NavigationLink path={Routes.SYSTEM.INPUTS} description="Inputs" />
       </IfPermitted>

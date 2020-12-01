@@ -127,10 +127,7 @@ const Navigation = ({ location }: Props) => {
         <NotificationBadge />
 
         <Nav navbar pullRight className="header-meta-nav">
-          <LinkContainer to={Routes.SYSTEM.NODES.LIST}>
-            <GlobalThroughput />
-          </LinkContainer>
-
+          <GlobalThroughput />
           <InactiveNavItem className="dev-badge-wrap">
             <DevelopmentHeaderBadge />
             {pluginItems.map(({ key, component: Item }) => <Item key={key} />)}

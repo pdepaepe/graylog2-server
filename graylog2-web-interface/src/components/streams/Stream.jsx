@@ -2,10 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-import EntityShareModal from 'components/permissions/EntityShareModal';
 import { Link, LinkContainer } from 'components/graylog/router';
 import { Button, Tooltip } from 'components/graylog';
-import { OverlayElement, Icon, ShareButton } from 'components/common';
 import StreamRuleForm from 'components/streamrules/StreamRuleForm';
 import { isPermitted, isAnyPermitted } from 'util/PermissionsMixin';
 import UserNotification from 'util/UserNotification';
@@ -79,7 +77,6 @@ class Stream extends React.Component {
     this.state = {
       loading: false,
       showStreamRuleForm: false,
-      showEntityShareModal: false,
     };
   }
 
@@ -89,14 +86,6 @@ class Stream extends React.Component {
 
   _openStreamRuleForm = () => {
     this.setState({ showStreamRuleForm: true });
-  };
-
-  _closeEntityShareModal = () => {
-    this.setState({ showEntityShareModal: false });
-  };
-
-  _openEntityShareModal = () => {
-    this.setState({ showEntityShareModal: true });
   };
 
   _onDelete= (stream) => {
@@ -155,7 +144,7 @@ class Stream extends React.Component {
 
   render() {
     const { indexSets, stream, permissions, streamRuleTypes, user } = this.props;
-    const { loading, showStreamRuleForm, showEntityShareModal } = this.state;
+    const { loading, showStreamRuleForm } = this.state;
 
     const isDefaultStream = stream.is_default;
     const defaultStreamTooltip = isDefaultStream
@@ -235,7 +224,6 @@ class Stream extends React.Component {
         <div className="stream-actions pull-right">
           {editRulesLink}{' '}
           {manageAlertsLink}{' '}
-          <ShareButton entityId={stream.id} entityType="stream" onClick={this._openEntityShareModal} />
           {toggleStreamLink}{' '}
 
           {streamControls}

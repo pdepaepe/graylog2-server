@@ -7,7 +7,7 @@ import connect from 'stores/connect';
 import type { ThemeInterface } from 'theme';
 import { isPermitted } from 'util/PermissionsMixin';
 import { Button, ButtonGroup, DropdownButton, MenuItem } from 'components/graylog';
-import { Icon, ShareButton } from 'components/common';
+import { Icon } from 'components/common';
 import { ViewManagementActions } from 'views/stores/ViewManagementStore';
 import UserNotification from 'util/UserNotification';
 import { ViewStore, ViewActions } from 'views/stores/ViewStore';
@@ -18,7 +18,6 @@ import ViewLoaderContext from 'views/logic/ViewLoaderContext';
 import NewViewLoaderContext from 'views/logic/NewViewLoaderContext';
 import CSVExportModal from 'views/components/searchbar/csvexport/CSVExportModal';
 import ViewTypeLabel from 'views/components/ViewTypeLabel';
-import EntityShareModal from 'components/permissions/EntityShareModal';
 import CurrentUserContext from 'contexts/CurrentUserContext';
 import * as Permissions from 'views/Permissions';
 import type { UserJSON } from 'logic/users/User';
@@ -37,7 +36,6 @@ type State = {
   showForm: boolean,
   showList: boolean,
   showCSVExport: boolean,
-  showShareSearch: boolean,
   showMetadataEdit: boolean,
   newTitle: string,
 };
@@ -70,7 +68,6 @@ class SavedSearchControls extends React.Component<Props, State> {
     this.state = {
       showMetadataEdit: false,
       showCSVExport: false,
-      showShareSearch: false,
       showForm: false,
       showList: false,
       newTitle: (view && view.title) || '',
@@ -99,12 +96,6 @@ class SavedSearchControls extends React.Component<Props, State> {
     const { showMetadataEdit } = this.state;
 
     this.setState({ showMetadataEdit: !showMetadataEdit });
-  };
-
-  toggleShareSearch = () => {
-    const { showShareSearch } = this.state;
-
-    this.setState({ showShareSearch: !showShareSearch });
   };
 
   onChangeTitle = (e: SyntheticInputEvent<HTMLInputElement>) => {
@@ -195,7 +186,7 @@ class SavedSearchControls extends React.Component<Props, State> {
   };
 
   render() {
-    const { showForm, showList, newTitle, showCSVExport, showShareSearch, showMetadataEdit } = this.state;
+    const { showForm, showList, newTitle, showCSVExport, showMetadataEdit } = this.state;
     const { viewStoreState: { view, dirty }, theme } = this.props;
 
     const loaded = (view && view.id);
@@ -249,11 +240,6 @@ class SavedSearchControls extends React.Component<Props, State> {
                                        deleteSavedSearch={this.deleteSavedSearch}
                                        toggleModal={this.toggleListModal} />
                     )}
-                    <ShareButton entityType="search"
-                                 entityId={view.id}
-                                 onClick={this.toggleShareSearch}
-                                 bsStyle="default"
-                                 disabledInfo={!view.id && 'Only saved searches can be shared.'} />
                     <DropdownButton title={<Icon name="ellipsis-h" />} id="search-actions-dropdown" pullRight noCaret>
                       <MenuItem onSelect={this.toggleMetadataEdit} disabled={!isAllowedToEdit}>
                         <Icon name="edit" /> Edit metadata
@@ -263,7 +249,6 @@ class SavedSearchControls extends React.Component<Props, State> {
                       <MenuItem disabled={disableReset} onSelect={() => loadNewView()} data-testid="reset-search">
                         <Icon name="eraser" /> Reset search
                       </MenuItem>
-                      <MenuItem divider />
                     </DropdownButton>
                     {showCSVExport && (
                       <CSVExportModal view={view} closeModal={this.toggleCSVExport} />
@@ -274,13 +259,6 @@ class SavedSearchControls extends React.Component<Props, State> {
                                            title="Editing saved search"
                                            onClose={this.toggleMetadataEdit}
                                            onSave={onSaveView} />
-                    )}
-                    {showShareSearch && (
-                      <EntityShareModal entityId={view.id}
-                                        entityType="search"
-                                        entityTitle={view.title}
-                                        description={`Search for a User or Team to add as collaborator on this ${viewTypeLabel}.`}
-                                        onClose={this.toggleShareSearch} />
                     )}
                   </ButtonGroup>
                 </div>

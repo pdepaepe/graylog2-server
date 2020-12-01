@@ -7,7 +7,7 @@ import connect from 'stores/connect';
 import { isPermitted } from 'util/PermissionsMixin';
 import AppConfig from 'util/AppConfig';
 import { DropdownButton, MenuItem, Button, ButtonGroup } from 'components/graylog';
-import { Icon, ShareButton } from 'components/common';
+import { Icon } from 'components/common';
 import CSVExportModal from 'views/components/searchbar/csvexport/CSVExportModal';
 import DebugOverlay from 'views/components/DebugOverlay';
 import onSaveView from 'views/logic/views/OnSaveViewAction';
@@ -19,7 +19,6 @@ import * as Permissions from 'views/Permissions';
 import View from 'views/logic/views/View';
 import type { UserJSON } from 'logic/users/User';
 import CurrentUserContext from 'contexts/CurrentUserContext';
-import EntityShareModal from 'components/permissions/EntityShareModal';
 import ViewTypeLabel from 'views/components/ViewTypeLabel';
 
 import ViewPropertiesModal from './views/ViewPropertiesModal';
@@ -33,7 +32,6 @@ const _hasUndeclaredParameters = (searchMetadata: SearchMetadata) => searchMetad
 
 const ViewActionsMenu = ({ view, isNewView, metadata }) => {
   const currentUser = useContext(CurrentUserContext);
-  const [shareViewOpen, setShareViewOpen] = useState(false);
   const [debugOpen, setDebugOpen] = useState(false);
   const [saveAsViewOpen, setSaveAsViewOpen] = useState(false);
   const [editViewOpen, setEditViewOpen] = useState(false);
@@ -62,11 +60,6 @@ const ViewActionsMenu = ({ view, isNewView, metadata }) => {
               data-testid="dashboard-save-as-button">
         <Icon name="copy" /> Save as
       </Button>
-      <ShareButton entityType="dashboard"
-                   entityId={view.id}
-                   onClick={() => setShareViewOpen(true)}
-                   bsStyle="default"
-                   disabledInfo={isNewView && 'Only saved dashboards can be shared.'} />
       <DropdownButton title={<Icon name="ellipsis-h" />} id="query-tab-actions-dropdown" pullRight noCaret>
         <MenuItem onSelect={() => setEditViewOpen(true)} disabled={isNewView || !allowedToEdit}>
           <Icon name="edit" /> Edit metadata
@@ -92,14 +85,6 @@ const ViewActionsMenu = ({ view, isNewView, metadata }) => {
                              title="Editing dashboard"
                              onClose={() => setEditViewOpen(false)}
                              onSave={onSaveView} />
-      )}
-
-      {shareViewOpen && (
-        <EntityShareModal entityId={view.id}
-                          entityType="dashboard"
-                          entityTitle={view.title}
-                          description={`Search for a User or Team to add as collaborator on this ${viewTypeLabel}.`}
-                          onClose={() => setShareViewOpen(false)} />
       )}
       {csvExportOpen && <CSVExportModal view={view} closeModal={() => setCsvExportOpen(false)} />}
     </ButtonGroup>

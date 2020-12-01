@@ -2,17 +2,13 @@ import React, { useEffect, useReducer, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { ButtonToolbar, DropdownButton, MenuItem } from 'components/graylog';
-import { IfPermitted, PaginatedList, SearchForm, Spinner, EntityList, ShareButton } from 'components/common';
-import EntityShareModal from 'components/permissions/EntityShareModal';
+import { IfPermitted, PaginatedList, SearchForm, Spinner, EntityList } from 'components/common';
 
 import View from './View';
 
-import ViewTypeLabel from '../ViewTypeLabel';
-
-const itemActionsFactory = (view, onViewDelete, setViewToShare) => {
+const itemActionsFactory = (view, onViewDelete) => {
   return (
     <ButtonToolbar>
-      <ShareButton entityId={view.id} entityType="dashboard" onClick={() => setViewToShare(view)} />
       <DropdownButton title="Actions" id={`view-actions-dropdown-${view.id}`} pullRight>
         <IfPermitted permissions={[`view:edit:${view.id}`, 'view:edit']} anyPermissions>
           <MenuItem onSelect={onViewDelete(view)}>Delete</MenuItem>
@@ -42,7 +38,6 @@ const reducer = (state, action) => {
 
 const ViewList = ({ pagination, handleSearch, handleViewDelete, views }) => {
   const [{ query, page, perPage }, dispatch] = useReducer(reducer, { query: '', page: 1, perPage: 10 });
-  const [viewToShare, setViewToShare] = useState();
 
   const execSearch = () => handleSearch(query, page, perPage);
 
@@ -70,19 +65,12 @@ const ViewList = ({ pagination, handleSearch, handleViewDelete, views }) => {
           summary={view.summary}
           requires={view.requires}
           description={view.description}>
-      {itemActionsFactory(view, onViewDelete, setViewToShare)}
+      {itemActionsFactory(view, onViewDelete)}
     </View>
   ));
 
   return (
     <>
-      { viewToShare && (
-        <EntityShareModal entityId={viewToShare.id}
-                          entityType="dashboard"
-                          description={`Search for a User or Team to add as collaborator on this ${ViewTypeLabel({ type: viewToShare.type })}.`}
-                          entityTitle={viewToShare.title}
-                          onClose={() => setViewToShare(undefined)} />
-      )}
       <PaginatedList onChange={(newPage, newPerPage) => dispatch({ type: 'pageChange', payload: { newPage, newPerPage } })}
                      activePage={pagination.page}
                      totalItems={pagination.total}

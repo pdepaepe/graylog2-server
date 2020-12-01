@@ -3,13 +3,11 @@ import PropTypes from 'prop-types';
 import { PluginStore } from 'graylog-web-plugin/plugin';
 
 import { LinkContainer, Link } from 'components/graylog/router';
-import EntityShareModal from 'components/permissions/EntityShareModal';
 import { Col, DropdownButton, MenuItem, Row, Button } from 'components/graylog';
 import {
   EmptyEntity,
   EntityList,
   EntityListItem,
-  ShareButton,
   IfPermitted,
   PaginatedList,
   SearchForm,
@@ -39,10 +37,7 @@ class EventNotifications extends React.Component {
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      notificationToShare: undefined,
-    };
+    this.state = {};
   }
 
   renderEmptyContent = () => {
@@ -73,12 +68,12 @@ class EventNotifications extends React.Component {
     return PluginStore.exports('eventNotificationTypes').find((n) => n.type === type) || {};
   };
 
-  formatNotification = (notifications, setNotificationToShare) => {
+  formatNotification = (notifications) => {
     const { testResult } = this.props;
 
     return notifications.map((notification) => {
       const isTestLoading = testResult.id === notification.id && testResult.isLoading;
-      const actions = this.formatActions(notification, isTestLoading, setNotificationToShare);
+      const actions = this.formatActions(notification, isTestLoading);
 
       const plugin = this.getNotificationPlugin(notification.config.type);
       const content = testResult.id === notification.id ? (
@@ -118,7 +113,6 @@ class EventNotifications extends React.Component {
             </Button>
           </IfPermitted>
         </LinkContainer>
-        <ShareButton entityType="notification" entityId={notification.id} onClick={() => setNotificationToShare(notification)} />
         <IfPermitted permissions={[`eventnotifications:edit:${notification.id}`, `eventnotifications:delete:${notification.id}`]} anyPermissions>
           <DropdownButton id={`more-dropdown-${notification.id}`} title="More" pullRight>
             <IfPermitted permissions={`eventnotifications:edit:${notification.id}`}>
@@ -138,9 +132,6 @@ class EventNotifications extends React.Component {
 
   render() {
     const { notifications, pagination, query, onPageChange, onQueryChange } = this.props;
-    const { notificationToShare } = this.state;
-
-    const setNotificationToShare = (notification) => this.setState({ notificationToShare: notification });
 
     if (pagination.grandTotal === 0) {
       return this.renderEmptyContent();
@@ -172,18 +163,11 @@ class EventNotifications extends React.Component {
                            totalItems={pagination.total}
                            onChange={onPageChange}>
               <div className={styles.notificationList}>
-                <EntityList items={this.formatNotification(notifications, setNotificationToShare)} />
+                <EntityList items={this.formatNotification(notifications)} />
               </div>
             </PaginatedList>
           </Col>
         </Row>
-        {notificationToShare && (
-          <EntityShareModal entityId={notificationToShare.id}
-                            entityType="notification"
-                            description="Search for a User or Team to add as collaborator on this notification."
-                            entityTitle={notificationToShare.title}
-                            onClose={() => setNotificationToShare(undefined)} />
-        )}
       </>
     );
   }

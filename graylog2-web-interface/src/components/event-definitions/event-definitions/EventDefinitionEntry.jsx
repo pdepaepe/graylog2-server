@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import lodash from 'lodash';
 import { PluginStore } from 'graylog-web-plugin/plugin';
 
-import EntityShareModal from 'components/permissions/EntityShareModal';
 import Routes from 'routing/Routes';
 import { Link, LinkContainer } from 'components/graylog/router';
 import {
@@ -16,7 +15,6 @@ import {
   EntityListItem,
   IfPermitted,
   Icon,
-  ShareButton,
 } from 'components/common';
 
 import EventDefinitionDescription from './EventDefinitionDescription';
@@ -62,7 +60,6 @@ const EventDefinitionEntry = ({
   onEnable,
   onDelete,
 }: Props) => {
-  const [showEntityShareModal, setShowEntityShareModal] = useState(false);
   const isScheduled = lodash.get(context, `scheduler.${eventDefinition.id}.is_scheduled`, true);
 
   let toggle = <MenuItem onClick={onDisable(eventDefinition)}>Disable</MenuItem>;
@@ -80,7 +77,6 @@ const EventDefinitionEntry = ({
           </Button>
         </LinkContainer>
       </IfPermitted>
-      <ShareButton entryId={eventDefinition.id} entityType="event_definition" onClick={() => setShowEntityShareModal(true)} />
       <IfPermitted permissions={`eventdefinitions:delete:${eventDefinition.id}`}>
         <DropdownButton id="more-dropdown" title="More" pullRight>
           {toggle}
@@ -108,14 +104,6 @@ const EventDefinitionEntry = ({
                       description={renderDescription(eventDefinition, context)}
                       noItemsText="Could not find any items with the given filter."
                       actions={actions} />
-      { showEntityShareModal && (
-        <EntityShareModal entityId={eventDefinition.id}
-                          entityType="event_definition"
-                          entityTypeTitle="event definition"
-                          entityTitle={eventDefinition.title}
-                          description="Search for a User or Team to add as collaborator on this event definition."
-                          onClose={() => setShowEntityShareModal(false)} />
-      )}
     </>
   );
 };

@@ -103,10 +103,6 @@
             <groupId>com.google.inject.extensions</groupId>
             <artifactId>guice-assistedinject</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.google.inject.extensions</groupId>
-            <artifactId>guice-multibindings</artifactId>
-        </dependency>
         <!-- fishy -->
         <dependency>
             <groupId>org.glassfish.hk2.external</groupId>
@@ -215,6 +211,12 @@
         <dependency>
             <groupId>org.glassfish.jersey.ext</groupId>
             <artifactId>jersey-bean-validation</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-validator</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
@@ -325,6 +327,11 @@
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15on</artifactId>
+            <version>${bouncycastle.version}</version>
+        </dependency>
 
         <!-- Logging dependencies -->
         <dependency>
@@ -426,13 +433,38 @@
 
         <dependency>
             <groupId>io.netty</groupId>
+            <artifactId>netty-handler</artifactId>
+            <version>${netty4.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-codec</artifactId>
+            <version>${netty4.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
             <artifactId>netty-codec-dns</artifactId>
             <version>${netty4.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.netty</groupId>
+            <artifactId>netty-codec-http</artifactId>
+            <version>${netty4.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
             <artifactId>netty-resolver-dns</artifactId>
+            <version>${netty4.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-transport-native-epoll</artifactId>
+            <classifier>linux-x86_64</classifier>
             <version>${netty4.version}</version>
         </dependency>
 
@@ -602,6 +634,16 @@
                             <artifact>commons-collections:commons-collections</artifact>
                             <excludes>
                                 <exclude>org/apache/commons/collections/functors/InvokerTransformer.class</exclude>
+                            </excludes>
+                        </filter>
+                        <!-- Bouncycastle's JARs are signed. When building a shaded JAR, either remove the signatures, or
+                            add dependency to the main JAR's manifest. Otherwise running the application will fail. -->
+                        <filter>
+                            <artifact>org.bouncycastle:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
                             </excludes>
                         </filter>
                     </filters>

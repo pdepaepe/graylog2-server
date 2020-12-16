@@ -53,7 +53,9 @@ public class DefaultSecurityManagerProvider implements Provider<DefaultSecurityM
         sm = new DefaultSecurityManager(orderedAuthenticatingRealms);
         final Authenticator authenticator = sm.getAuthenticator();
         if (authenticator instanceof ModularRealmAuthenticator) {
-            ((ModularRealmAuthenticator) authenticator).setAuthenticationStrategy(new FirstSuccessfulStrategy());
+            FirstSuccessfulStrategy strategy = new FirstSuccessfulStrategy();
+            strategy.setStopAfterFirstSuccess(true);
+            ((ModularRealmAuthenticator) authenticator).setAuthenticationStrategy(strategy);
         }
         final ModularRealmAuthorizer authorizer = new ModularRealmAuthorizer(of(mongoDbAuthorizationRealm,
                                                                                 rootAccountRealm));

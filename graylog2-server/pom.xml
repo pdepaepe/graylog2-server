@@ -505,7 +505,8 @@
         </dependency>
         <dependency>
             <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka_2.11</artifactId>
+            <artifactId>kafka_2.13</artifactId>
+            <version>2.7.0</version>
         </dependency>
         <dependency>
             <groupId>org.graylog2</groupId>

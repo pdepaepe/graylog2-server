@@ -272,4 +272,8 @@ public class ClusterAdapterES7 implements ClusterAdapter {
     }
 
 
+    @Override
+    public Object internalClient() {
+        return client;
+    }
 }

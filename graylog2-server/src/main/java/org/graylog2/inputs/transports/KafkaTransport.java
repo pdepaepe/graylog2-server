@@ -256,7 +256,10 @@ public class KafkaTransport extends ThrottleableTransport {
                 boolean retry = false;
 
                 while(!stopped){
+                    // Workaround https://issues.apache.org/jira/browse/KAFKA-4189 by calling wakeup()
+                    final ScheduledFuture<?> future = scheduler.schedule(consumer::wakeup, 5000, TimeUnit.MILLISECONDS);
                     final ConsumerRecords<byte[], byte[]> consumerRecords = consumer.poll(Duration.ofMillis(1000));
+                    future.cancel(true);
                     final Iterator<ConsumerRecord<byte[], byte[]>> consumerIterator = consumerRecords.iterator();
 
                     try {

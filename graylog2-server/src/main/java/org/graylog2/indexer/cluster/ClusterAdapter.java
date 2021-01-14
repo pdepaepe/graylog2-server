@@ -53,6 +53,4 @@ public interface ClusterAdapter {
 
     ShardStats shardStats(Collection<String> indices);
 
-    Object internalClient();
-
 }

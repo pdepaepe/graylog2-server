@@ -19,6 +19,7 @@ package org.graylog2.indexer.fieldtypes;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import org.graylog.plugins.views.search.rest.MappedFieldTypeDTO;
+import org.graylog2.indexer.fieldtypes.kefla.KeflaService;
 import org.graylog2.streams.StreamService;
 
 import javax.inject.Inject;
@@ -33,13 +34,15 @@ import static org.graylog2.indexer.fieldtypes.FieldTypes.Type.createType;
 public class MappedFieldTypesService {
     private final StreamService streamService;
     private final IndexFieldTypesService indexFieldTypesService;
+    private final KeflaService keflaService;
     private final FieldTypeMapper fieldTypeMapper;
 
     private static final FieldTypes.Type UNKNOWN_TYPE = createType("unknown", of());
     private static final String PROP_COMPOUND_TYPE = "compound";
 
     @Inject
-    public MappedFieldTypesService(StreamService streamService, IndexFieldTypesService indexFieldTypesService, FieldTypeMapper fieldTypeMapper) {
+    public MappedFieldTypesService(StreamService streamService, IndexFieldTypesService indexFieldTypesService, KeflaService keflaService, FieldTypeMapper fieldTypeMapper) {
+        this.keflaService = keflaService;
         this.streamService = streamService;
         this.indexFieldTypesService = indexFieldTypesService;
         this.fieldTypeMapper = fieldTypeMapper;
@@ -49,7 +52,7 @@ public class MappedFieldTypesService {
         final Set<String> indexSets = streamService.indexSetIdsByIds(streamIds);
 
         final java.util.stream.Stream<MappedFieldTypeDTO> types = this.indexFieldTypesService.findForIndexSets(indexSets).stream()
-                .flatMap(indexSet -> indexSet.fields().stream())
+                .flatMap(indexFieldTypesDTO -> keflaService.filterField(indexFieldTypesDTO.indexName(), streamIds,indexFieldTypesDTO.fields()))
                 .map(this::mapPhysicalFieldType);
         return mergeCompoundFieldTypes(types);
     }

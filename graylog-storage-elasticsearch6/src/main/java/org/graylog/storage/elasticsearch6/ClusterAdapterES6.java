@@ -299,8 +299,4 @@ public class ClusterAdapterES6 implements ClusterAdapter {
         }
     }
 
-    @Override
-    public Object internalClient() {
-        return jestClient;
-    }
 }

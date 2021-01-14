@@ -19,10 +19,12 @@ package org.graylog2.indexer.fieldtypes;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import org.graylog.plugins.views.search.rest.MappedFieldTypeDTO;
+import org.graylog2.indexer.fieldtypes.kefla.KeflaService;
 import org.graylog2.streams.StreamService;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
@@ -31,8 +33,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 public class MappedFieldTypesServiceTest {
@@ -43,13 +48,16 @@ public class MappedFieldTypesServiceTest {
     private StreamService streamService;
 
     @Mock
+    private KeflaService kService;
+
+    @Mock
     private IndexFieldTypesService indexFieldTypesService;
 
     private MappedFieldTypesService mappedFieldTypesService;
 
     @Before
     public void setUp() throws Exception {
-        this.mappedFieldTypesService = new MappedFieldTypesService(streamService, indexFieldTypesService, new FieldTypeMapper());
+        this.mappedFieldTypesService = new MappedFieldTypesService(streamService, indexFieldTypesService,kService, new FieldTypeMapper());
         when(streamService.indexSetIdsByIds(Collections.singleton("stream1"))).thenReturn(Collections.singleton("indexSetId"));
     }
 
@@ -70,6 +78,10 @@ public class MappedFieldTypesServiceTest {
                 )
         );
         when(indexFieldTypesService.findForIndexSets(Collections.singleton("indexSetId"))).thenReturn(fieldTypes);
+        when(kService.filterField(any(),any(), any())).then( (invocationOnMock) -> {
+            Object[] args = invocationOnMock.getArguments();
+            return ((ImmutableSet<FieldTypeDTO>)args[3]).stream();
+        });
 
         final Set<MappedFieldTypeDTO> result = this.mappedFieldTypesService.fieldTypesByStreamIds(Collections.singleton("stream1"));
         assertThat(result).containsExactlyInAnyOrder(
@@ -95,6 +107,10 @@ public class MappedFieldTypesServiceTest {
                 )
         );
         when(indexFieldTypesService.findForIndexSets(Collections.singleton("indexSetId"))).thenReturn(fieldTypes);
+        when(kService.filterField(any(),any(), any())).then( (invocationOnMock) -> {
+            Object[] args = invocationOnMock.getArguments();
+            return ((ImmutableSet<FieldTypeDTO>)args[3]).stream();
+        });
 
         final Set<MappedFieldTypeDTO> result = this.mappedFieldTypesService.fieldTypesByStreamIds(Collections.singleton("stream1"));
         assertThat(result).containsExactlyInAnyOrder(

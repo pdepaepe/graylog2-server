@@ -298,4 +298,5 @@ public class ClusterAdapterES6 implements ClusterAdapter {
             return Optional.empty();
         }
     }
+
 }

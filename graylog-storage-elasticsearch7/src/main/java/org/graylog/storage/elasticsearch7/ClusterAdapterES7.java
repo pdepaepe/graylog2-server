@@ -271,5 +271,4 @@ public class ClusterAdapterES7 implements ClusterAdapter {
         return client.execute((c, requestOptions) -> c.indices().exists(getIndexRequest, requestOptions));
     }
 
-
 }

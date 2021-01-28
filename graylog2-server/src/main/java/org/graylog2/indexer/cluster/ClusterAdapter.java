@@ -52,4 +52,5 @@ public interface ClusterAdapter {
     PendingTasksStats pendingTasks();
 
     ShardStats shardStats(Collection<String> indices);
+
 }

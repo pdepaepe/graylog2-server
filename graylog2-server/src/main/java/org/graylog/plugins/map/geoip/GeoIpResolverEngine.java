@@ -21,6 +21,7 @@ import com.codahale.metrics.Timer;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.net.InetAddresses;
+import com.maxmind.db.CHMCache;
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.model.CityResponse;
 import com.maxmind.geoip2.record.City;
@@ -55,7 +56,7 @@ public class GeoIpResolverEngine {
         try {
             final File database = new File(config.dbPath());
             if (Files.exists(database.toPath())) {
-                this.databaseReader = new DatabaseReader.Builder(database).build();
+                this.databaseReader = new DatabaseReader.Builder(database).withCache(new CHMCache()).build();
                 this.enabled = config.enabled();
             } else {
                 LOG.warn("GeoIP database file does not exist: {}", config.dbPath());

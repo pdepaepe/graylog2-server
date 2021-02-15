@@ -49,7 +49,7 @@ public class MigrationsModule extends PluginModule {
         addMigration(V20200102140000_UnifyEventSeriesId.class);
         addMigration(V20200226181600_EncryptAccessTokensMigration.class);
         addMigration(V20200722110800_AddBuiltinRoles.class);
-        addMigration(GrantsMetaMigration.class);
+        //addMigration(GrantsMetaMigration.class);
         addMigration(V20201103145400_LegacyAuthServiceMigration.class);
 
         // Make sure there is always a binder for migration modules

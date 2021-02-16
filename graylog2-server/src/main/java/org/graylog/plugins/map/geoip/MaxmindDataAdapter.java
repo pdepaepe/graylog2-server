@@ -28,6 +28,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.google.common.net.InetAddresses;
 import com.google.inject.assistedinject.Assisted;
+import com.maxmind.db.CHMCache;
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.exception.AddressNotFoundException;
 import com.maxmind.geoip2.model.AsnResponse;
@@ -147,7 +148,7 @@ public class MaxmindDataAdapter extends LookupDataAdapter {
     }
 
     private DatabaseReader loadReader(File file) throws IOException {
-        return new DatabaseReader.Builder(file).build();
+        return new DatabaseReader.Builder(file).withCache(new CHMCache()).build();
     }
 
     @Override

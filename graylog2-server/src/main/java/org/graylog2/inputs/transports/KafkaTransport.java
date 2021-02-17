@@ -308,7 +308,7 @@ public class KafkaTransport extends ThrottleableTransport {
                         }
 
                     } catch (WakeupException e) {
-                        LOG.warn("The kafka input needed a wakeup call",e);
+                        LOG.debug("The kafka input needed a wakeup call",e);
                     } catch (Exception e) {
                         LOG.error("Kafka consumer error, but not stopping consumer thread.", e);
                     }

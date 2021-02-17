@@ -70,6 +70,8 @@ public class KafkaTransport extends ThrottleableTransport {
     public static final String CK_BOOTSTRAP = "bootstrap_server";
     public static final String CK_MAX_POLL_RECORDS = "max_poll_records";
     public static final String CK_MAX_POLL_INTERVAL_MS = "max_poll_interval_ms";
+    public static final String CK_SESSION_TIMEOUT_MS = "session_timeout_ms";
+
 
     public static final String CK_SSL = "ssl";
     public static final String CK_SSL_KEYSTORE_LOCATION="ssl_keystore_location";
@@ -192,6 +194,7 @@ public class KafkaTransport extends ThrottleableTransport {
 
         props.put("group.id", configuration.getString(CK_GROUP_ID, DEFAULT_GROUP_ID));
         props.put("client.id", "gl2-" + nodeId + "-" + input.getId());
+        props.put("group.instance.id", "gl2-" + nodeId + "-" + input.getId());
         props.put(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, String.valueOf(configuration.getInt(CK_FETCH_MIN_BYTES)));
         props.put(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, String.valueOf(configuration.getInt(CK_FETCH_WAIT_MAX)));
         props.put("auto.offset.reset", configuration.getString(CK_OFFSET_RESET, DEFAULT_OFFSET_RESET));
@@ -200,7 +203,8 @@ public class KafkaTransport extends ThrottleableTransport {
         props.put("auto.commit.interval.ms", configuration.getInt(CK_AUTO_COMMIT_INTERVAL_MS));
         props.put("bootstrap.servers", configuration.getString(CK_BOOTSTRAP));
         props.put("max.poll.interval.ms",configuration.getInt(CK_MAX_POLL_INTERVAL_MS));
-        props.put("max.poll.records",configuration.getInt(CK_MAX_POLL_RECORDS));
+        props.put("max.poll.records", configuration.getInt(CK_MAX_POLL_RECORDS));
+        props.put("session.timeout.ms", configuration.getInt(CK_SESSION_TIMEOUT_MS));
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,ByteArrayDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,ByteArrayDeserializer.class.getName());
 
@@ -501,6 +505,13 @@ public class KafkaTransport extends ThrottleableTransport {
                     DEFAULT_GROUP_ID,
                     "Name of the consumer group the Kafka input belongs to",
                     ConfigurationField.Optional.OPTIONAL));
+
+            cr.addField(new NumberField(
+                    CK_SESSION_TIMEOUT_MS,
+                    "session.timeout.ms",
+                    10000,
+                    "The timeout used to detect client failures when using Kafka's group management facility.",
+                    ConfigurationField.Optional.NOT_OPTIONAL));
 
             cr.addField(new NumberField(
                     CK_MAX_POLL_INTERVAL_MS,

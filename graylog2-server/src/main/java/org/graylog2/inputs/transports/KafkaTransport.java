@@ -1,16 +1,16 @@
 /**
  * This file is part of Graylog.
- *
+ * <p>
  * Graylog is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * Graylog is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with Graylog.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -28,6 +28,7 @@ import com.google.common.util.concurrent.Uninterruptibles;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import org.apache.kafka.clients.consumer.*;
+import org.apache.kafka.common.errors.WakeupException;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.graylog2.plugin.LocalMetricRegistry;
 import org.graylog2.plugin.ServerStatus;
@@ -74,12 +75,12 @@ public class KafkaTransport extends ThrottleableTransport {
 
 
     public static final String CK_SSL = "ssl";
-    public static final String CK_SSL_KEYSTORE_LOCATION="ssl_keystore_location";
-    public static final String CK_SSL_KEYSTORE_PASSWORD="ssl_keystore_password";
-    public static final String CK_SSL_KEY_PASSWORD="ssl_key_password";
-    public static final String CK_SSL_TRUSTSTORE_LOCATION="ssl_truststore_location";
-    public static final String CK_SSL_TRUSTSTORE_PASSWORD="ssl_truststore_password";
-    public static final String CK_SSL_ENABLED_PROTOCOL="ssl_enabled_protocol";
+    public static final String CK_SSL_KEYSTORE_LOCATION = "ssl_keystore_location";
+    public static final String CK_SSL_KEYSTORE_PASSWORD = "ssl_keystore_password";
+    public static final String CK_SSL_KEY_PASSWORD = "ssl_key_password";
+    public static final String CK_SSL_TRUSTSTORE_LOCATION = "ssl_truststore_location";
+    public static final String CK_SSL_TRUSTSTORE_PASSWORD = "ssl_truststore_password";
+    public static final String CK_SSL_ENABLED_PROTOCOL = "ssl_enabled_protocol";
 
     public static final String CK_SASL = "sasl";
     public static final String CK_SASL_USERNAME = "sasl_plain_username";
@@ -202,15 +203,15 @@ public class KafkaTransport extends ThrottleableTransport {
         // if something breaks.
         props.put("auto.commit.interval.ms", configuration.getInt(CK_AUTO_COMMIT_INTERVAL_MS));
         props.put("bootstrap.servers", configuration.getString(CK_BOOTSTRAP));
-        props.put("max.poll.interval.ms",configuration.getInt(CK_MAX_POLL_INTERVAL_MS));
+        props.put("max.poll.interval.ms", configuration.getInt(CK_MAX_POLL_INTERVAL_MS));
         props.put("max.poll.records", configuration.getInt(CK_MAX_POLL_RECORDS));
         props.put("session.timeout.ms", configuration.getInt(CK_SESSION_TIMEOUT_MS));
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,ByteArrayDeserializer.class.getName());
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,ByteArrayDeserializer.class.getName());
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ByteArrayDeserializer.class.getName());
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ByteArrayDeserializer.class.getName());
 
         // SSL settings
 
-        if(configuration.getBoolean(CK_SSL)) {
+        if (configuration.getBoolean(CK_SSL)) {
             props.put("ssl.keystore.location", configuration.getString(CK_SSL_KEYSTORE_LOCATION));
             props.put("ssl.keystore.password", configuration.getString(CK_SSL_KEYSTORE_PASSWORD));
             props.put("ssl.key.password", configuration.getString(CK_SSL_KEY_PASSWORD));
@@ -223,9 +224,9 @@ public class KafkaTransport extends ThrottleableTransport {
         //SASL Settings
 
         if (configuration.getBoolean(CK_SASL)) {
-            if(configuration.getBoolean(CK_SSL)) {
+            if (configuration.getBoolean(CK_SSL)) {
                 props.put("security.protocol", "SASL_SSL");
-            } else  {
+            } else {
                 props.put("securty.protocol", "SASL_PLAINTEXT");
             }
             props.put("sasl.mechanism", "PLAIN");
@@ -241,7 +242,7 @@ public class KafkaTransport extends ThrottleableTransport {
 
         List<String> subscribedTopics = Arrays.stream(configuration.getString(CK_TOPIC_FILTER).split(",")).collect(Collectors.toList());
 
-        if(subscribedTopics.size() == 1) {
+        if (subscribedTopics.size() == 1) {
             consumer.subscribe(Pattern.compile(subscribedTopics.get(0)));
         } else {
             consumer.subscribe(subscribedTopics);
@@ -259,14 +260,15 @@ public class KafkaTransport extends ThrottleableTransport {
             public void run() {
                 boolean retry = false;
 
-                while(!stopped){
-                    // Workaround https://issues.apache.org/jira/browse/KAFKA-4189 by calling wakeup()
-                    final ScheduledFuture<?> future = scheduler.schedule(consumer::wakeup, 5000, TimeUnit.MILLISECONDS);
-                    final ConsumerRecords<byte[], byte[]> consumerRecords = consumer.poll(Duration.ofMillis(1000));
-                    future.cancel(true);
-                    final Iterator<ConsumerRecord<byte[], byte[]>> consumerIterator = consumerRecords.iterator();
-
+                while (!stopped) {
                     try {
+
+                        // Workaround https://issues.apache.org/jira/browse/KAFKA-4189 by calling wakeup()
+                        final ScheduledFuture<?> future = scheduler.schedule(consumer::wakeup, 5000, TimeUnit.MILLISECONDS);
+                        final ConsumerRecords<byte[], byte[]> consumerRecords = consumer.poll(Duration.ofMillis(3000));
+                        future.cancel(true);
+                        final Iterator<ConsumerRecord<byte[], byte[]>> consumerIterator = consumerRecords.iterator();
+
                         // we have to use hasNext() here instead foreach, because next() marks the message as processed immediately
                         // noinspection WhileLoopReplaceableByForEach
                         while (consumerIterator.hasNext()) {
@@ -305,8 +307,10 @@ public class KafkaTransport extends ThrottleableTransport {
                             input.processRawMessage(rawMessage);
                         }
 
+                    } catch (WakeupException e) {
+                        LOG.debug("The kafka input needed a wakeup call",e);
                     } catch (Exception e) {
-                        LOG.error("Kafka consumer error, stopping consumer thread.", e);
+                        LOG.error("Kafka consumer error, but not stopping consumer thread.", e);
                     }
 
                 }
@@ -358,7 +362,7 @@ public class KafkaTransport extends ThrottleableTransport {
             }
         }
         // close
-        if(consumer != null) {
+        if (consumer != null) {
             consumer.close();
             consumer = null;
         }

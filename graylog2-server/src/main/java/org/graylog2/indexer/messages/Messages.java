@@ -210,10 +210,7 @@ public class Messages {
     }
 
     private void accountTotalMessageSizes(List<IndexingRequest> requests, boolean isSystemTraffic) {
-        final long totalSizeOfIndexedMessages = requests.stream()
-                .map(IndexingRequest::message)
-                .mapToLong(Indexable::getSize)
-                .sum();
+        final long totalSizeOfIndexedMessages = 0L;
 
         if (isSystemTraffic) {
             trafficAccounting.addSystemTraffic(totalSizeOfIndexedMessages);

@@ -452,26 +452,6 @@ public class MessageTest {
     }
 
     @Test
-    public void testToElasticsearchObjectAddsAccountedMessageSize() {
-        final Message message = new Message("message", "source", Tools.nowUTC());
-
-        assertThat(message.toElasticSearchObject(objectMapper, invalidTimestampMeter).get("gl2_accounted_message_size"))
-                .isEqualTo(43L);
-    }
-
-    @Test
-    public void messageSizes() {
-        final Message message = new Message("1234567890", "12345", Tools.nowUTC());
-        assertThat(message.getSize()).isEqualTo(45);
-
-        final Stream defaultStream = mock(Stream.class);
-        when(defaultStream.getId()).thenReturn(DEFAULT_STREAM_ID);
-        message.addStream(defaultStream);
-
-        assertThat(message.getSize()).isEqualTo(53);
-    }
-
-    @Test
     public void testIsComplete() throws Exception {
         Message message = new Message("message", "source", Tools.nowUTC());
         assertTrue(message.isComplete());
@@ -579,18 +559,6 @@ public class MessageTest {
 
         assertThat(message.getStreamIds()).containsOnly("test1", "test2");
 
-    }
-
-    @Test
-    public void fieldTest() {
-        assertThat(Message.sizeForField("", true)).isEqualTo(4);
-        assertThat(Message.sizeForField("", (byte)1)).isEqualTo(1);
-        assertThat(Message.sizeForField("", (char)1)).isEqualTo(2);
-        assertThat(Message.sizeForField("", (short)1)).isEqualTo(2);
-        assertThat(Message.sizeForField("", 1)).isEqualTo(4);
-        assertThat(Message.sizeForField("", 1L)).isEqualTo(8);
-        assertThat(Message.sizeForField("", 1.0f)).isEqualTo(4);
-        assertThat(Message.sizeForField("", 1.0d)).isEqualTo(8);
     }
 
     @Test

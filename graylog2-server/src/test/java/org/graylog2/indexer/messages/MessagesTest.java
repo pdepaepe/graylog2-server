@@ -69,46 +69,8 @@ public class MessagesTest {
         verify(messagesAdapter, never()).bulkIndex(any());
     }
 
-    @Test
-    public void bulkIndexingShouldAccountMessageSizes() throws IOException {
-        when(messagesAdapter.bulkIndex(any())).thenReturn(Collections.emptyList());
-        final IndexSet indexSet = mock(IndexSet.class);
-        final List<Map.Entry<IndexSet, Message>> messageList = ImmutableList.of(
-                createMessageListEntry(indexSet, messageWithSize(17)),
-                createMessageListEntry(indexSet, messageWithSize(23)),
-                createMessageListEntry(indexSet, messageWithSize(42))
-        );
-
-        messages.bulkIndex(messageList);
-
-        verify(trafficAccounting, times(1)).addOutputTraffic(82);
-        verify(trafficAccounting, never()).addSystemTraffic(anyLong());
-    }
-
-    @Test
-    public void bulkIndexingShouldAccountMessageSizesForSystemTrafficSeparately() throws IOException {
-        when(messagesAdapter.bulkIndex(any())).thenReturn(Collections.emptyList());
-        final IndexSet indexSet = mock(IndexSet.class);
-        final List<Map.Entry<IndexSet, Message>> messageList = ImmutableList.of(
-                createMessageListEntry(indexSet, messageWithSize(17)),
-                createMessageListEntry(indexSet, messageWithSize(23)),
-                createMessageListEntry(indexSet, messageWithSize(42))
-        );
-
-        messages.bulkIndex(messageList, true);
-
-        verify(trafficAccounting, never()).addOutputTraffic(anyLong());
-        verify(trafficAccounting, times(1)).addSystemTraffic(82);
-    }
-
     private Map.Entry<IndexSet, Message> createMessageListEntry(IndexSet indexSet, Message message) {
         return new AbstractMap.SimpleEntry<>(indexSet, message);
     }
 
-    private Message messageWithSize(long size) {
-        final Message message = mock(Message.class);
-        when(message.getSize()).thenReturn(size);
-
-        return message;
-    }
 }

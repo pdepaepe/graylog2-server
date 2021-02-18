@@ -98,11 +98,6 @@ public class Message implements Messages, Indexable {
     public static final String INTERNAL_FIELD_PREFIX = "gl2_";
 
     /**
-     * Will be set to the accounted message size in bytes.
-     */
-    public static final String FIELD_GL2_ACCOUNTED_MESSAGE_SIZE = "gl2_accounted_message_size";
-
-    /**
      * This is the message ID. It will be set to a {@link de.huxhorn.sulky.ulid.ULID} during processing.
      * <p></p>
      * <b>Attention:</b> This is currently NOT the "_id" field which is used as ID for the document in Elasticsearch!
@@ -194,7 +189,6 @@ public class Message implements Messages, Indexable {
     private static final char KEY_REPLACEMENT_CHAR = '_';
 
     private static final ImmutableSet<String> GRAYLOG_FIELDS = ImmutableSet.of(
-        FIELD_GL2_ACCOUNTED_MESSAGE_SIZE,
         FIELD_GL2_ORIGINAL_TIMESTAMP,
         FIELD_GL2_PROCESSING_ERROR,
         FIELD_GL2_PROCESSING_TIMESTAMP,
@@ -277,39 +271,6 @@ public class Message implements Messages, Indexable {
     private DateTime processingTime;
 
     private ArrayList<Recording> recordings;
-
-    private com.codahale.metrics.Counter sizeCounter = new com.codahale.metrics.Counter();
-
-    private static final IdentityHashMap<Class<?>, Integer> classSizes = Maps.newIdentityHashMap();
-    static {
-        classSizes.put(byte.class, 1);
-        classSizes.put(Byte.class, 1);
-
-        classSizes.put(char.class, 2);
-        classSizes.put(Character.class, 2);
-
-        classSizes.put(short.class, 2);
-        classSizes.put(Short.class, 2);
-
-        classSizes.put(boolean.class, 4);
-        classSizes.put(Boolean.class, 4);
-
-        classSizes.put(int.class, 4);
-        classSizes.put(Integer.class, 4);
-
-        classSizes.put(float.class, 4);
-        classSizes.put(Float.class, 4);
-
-        classSizes.put(long.class, 8);
-        classSizes.put(Long.class, 8);
-
-        classSizes.put(double.class, 8);
-        classSizes.put(Double.class, 8);
-
-        classSizes.put(DateTime.class, 8);
-        classSizes.put(Date.class, 8);
-        classSizes.put(ZonedDateTime.class, 8);
-    }
 
     public Message(final String message, final String source, final DateTime timestamp) {
         fields.put(FIELD_ID, new UUID().toString());
@@ -407,7 +368,6 @@ public class Message implements Messages, Indexable {
         obj.put(FIELD_MESSAGE, getMessage());
         obj.put(FIELD_SOURCE, getSource());
         obj.put(FIELD_STREAMS, getStreamIds());
-        obj.put(FIELD_GL2_ACCOUNTED_MESSAGE_SIZE, getSize());
 
         final Object timestampValue = getField(FIELD_TIMESTAMP);
         DateTime dateTime;
@@ -436,11 +396,6 @@ public class Message implements Messages, Indexable {
         }
 
         return obj;
-    }
-
-    // estimate the byte/char length for a field and its value
-    static long sizeForField(@Nonnull String key, @Nonnull Object value) {
-        return key.length() + sizeForValue(value);
     }
 
     @Override
@@ -487,8 +442,7 @@ public class Message implements Messages, Indexable {
     }
 
     public void setSource(final String source) {
-        final Object previousSource = fields.put(FIELD_SOURCE, source);
-        updateSize(FIELD_SOURCE, source, previousSource);
+        fields.put(FIELD_SOURCE, source);
     }
 
     public void addField(final String key, final Object value) {
@@ -512,9 +466,7 @@ public class Message implements Messages, Indexable {
 
         final boolean isTimestamp = FIELD_TIMESTAMP.equals(trimmedKey);
         if (isTimestamp && value instanceof Date) {
-            final DateTime timestamp = new DateTime(value);
-            final Object previousValue = fields.put(FIELD_TIMESTAMP, timestamp);
-            updateSize(trimmedKey, timestamp, previousValue);
+            fields.put(FIELD_TIMESTAMP, new DateTime(value));
         } else if (isTimestamp && value instanceof Temporal) {
             final Date date;
             if (value instanceof ZonedDateTime) {
@@ -540,66 +492,15 @@ public class Message implements Messages, Indexable {
                 }
                 date = new Date();
             }
-
-            final DateTime timestamp = new DateTime(date);
-            final Object previousValue = fields.put(FIELD_TIMESTAMP, timestamp);
-            updateSize(trimmedKey, timestamp, previousValue);
+            fields.put(FIELD_TIMESTAMP, new DateTime(date));
         } else if (value instanceof String) {
             final String str = ((String) value).trim();
-
             if (isRequiredField || !str.isEmpty()) {
-                final Object previousValue = fields.put(trimmedKey, str);
-                updateSize(trimmedKey, str, previousValue);
+                fields.put(trimmedKey, str);
             }
         } else if (value != null) {
-            final Object previousValue = fields.put(trimmedKey, value);
-            updateSize(trimmedKey, value, previousValue);
+            fields.put(trimmedKey, value);
         }
-    }
-
-    private void updateSize(String fieldName, Object newValue, Object previousValue) {
-        // don't count internal fields
-        if (GRAYLOG_FIELDS.contains(fieldName) || ILLUMINATE_FIELDS.contains(fieldName)) {
-            return;
-        }
-        long newValueSize = 0;
-        long oldValueSize = 0;
-        final long oldSize = sizeCounter.getCount();
-        final int keyLength = fieldName.length();
-        // if the field is being removed, also subtract the name's length
-        if (newValue == null) {
-            sizeCounter.dec(keyLength);
-        } else {
-            newValueSize = sizeForValue(newValue);
-            sizeCounter.inc(newValueSize);
-        }
-        // if the field is new, also count its name's length
-        if (previousValue == null) {
-            sizeCounter.inc(keyLength);
-        } else {
-            oldValueSize = sizeForValue(previousValue);
-            sizeCounter.dec(oldValueSize);
-        }
-        if (LOG.isTraceEnabled()) {
-            final long newSize = sizeCounter.getCount();
-            LOG.trace("[Message size update][{}] key {}/{}, new/old/change: {}/{}/{} total: {}",
-                    getId(), fieldName, keyLength, newValueSize, oldValueSize, newSize - oldSize, newSize);
-        }
-    }
-
-    static long sizeForValue(@Nonnull Object value) {
-        long valueSize;
-        if (value instanceof CharSequence) {
-            valueSize = ((CharSequence) value).length();
-        } else {
-            final Integer classSize = classSizes.get(value.getClass());
-            valueSize = classSize == null ? 0 : classSize;
-        }
-        return valueSize;
-    }
-
-    public long getSize() {
-        return sizeCounter.getCount();
     }
 
     public static boolean validKey(final String key) {
@@ -651,8 +552,7 @@ public class Message implements Messages, Indexable {
 
     public void removeField(final String key) {
         if (!RESERVED_FIELDS.contains(key)) {
-            final Object removedValue = fields.remove(key);
-            updateSize(key, null, removedValue);
+            fields.remove(key);
         }
     }
 
@@ -704,12 +604,7 @@ public class Message implements Messages, Indexable {
      */
     public void addStream(Stream stream) {
         indexSets.add(stream.getIndexSet());
-        if (streams.add(stream)) {
-            sizeCounter.inc(8);
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("[Message size update][{}] stream added: {}", getId(), sizeCounter.getCount());
-            }
-        }
+        streams.add(stream);
     }
 
     /**
@@ -734,10 +629,6 @@ public class Message implements Messages, Indexable {
             indexSets.clear();
             for (Stream s : streams) {
                 indexSets.add(s.getIndexSet());
-            }
-            sizeCounter.dec(8);
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("[Message size update][{}] stream removed: {}", getId(), sizeCounter.getCount());
             }
         }
 

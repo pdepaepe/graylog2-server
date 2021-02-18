@@ -25,7 +25,6 @@ import java.util.Map;
 
 public interface Indexable {
     String getId();
-    long getSize();
     DateTime getReceiveTime();
     Map<String, Object> toElasticSearchObject(ObjectMapper objectMapper,@Nonnull final Meter invalidTimestampMeter);
     DateTime getTimestamp();

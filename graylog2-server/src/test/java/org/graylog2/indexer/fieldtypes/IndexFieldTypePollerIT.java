@@ -116,7 +116,6 @@ public abstract class IndexFieldTypePollerIT extends ElasticsearchBaseTest {
                 FieldTypeDTO.create("timestamp", "date"),
                 FieldTypeDTO.create("gl2_receive_timestamp", "date"),
                 FieldTypeDTO.create("gl2_processing_timestamp", "date"),
-                FieldTypeDTO.create("gl2_accounted_message_size", "long"),
                 FieldTypeDTO.create("streams", "keyword")
         );
     }
@@ -140,7 +139,6 @@ public abstract class IndexFieldTypePollerIT extends ElasticsearchBaseTest {
                 FieldTypeDTO.create("timestamp", "date"),
                 FieldTypeDTO.create("gl2_receive_timestamp", "date"),
                 FieldTypeDTO.create("gl2_processing_timestamp", "date"),
-                FieldTypeDTO.create("gl2_accounted_message_size", "long"),
                 FieldTypeDTO.create("streams", "keyword")
         );
     }

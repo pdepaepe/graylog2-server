@@ -254,7 +254,6 @@ public class DecodingProcessor implements EventHandler<MessageEvent> {
         message.setReceiveTime(raw.getTimestamp());
 
         metricRegistry.meter(name(baseMetricName, "processedMessages")).mark();
-        decodedTrafficCounter.inc(message.getSize());
         return message;
     }
 }

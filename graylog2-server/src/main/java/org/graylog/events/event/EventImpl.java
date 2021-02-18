@@ -363,8 +363,4 @@ public class EventImpl implements Event {
                 .toString();
     }
 
-    @Override
-    public long getSize() {
-        return 0;
-    }
 }

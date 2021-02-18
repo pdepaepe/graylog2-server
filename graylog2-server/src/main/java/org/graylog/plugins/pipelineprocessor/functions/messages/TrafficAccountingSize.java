@@ -38,7 +38,7 @@ public class TrafficAccountingSize extends AbstractFunction<Long> {
     @Override
     public Long evaluate(FunctionArgs args, EvaluationContext context) {
         final Message message = messageParam.optional(args, context).orElse(context.currentMessage());
-        final long size = message.getSize();
+        final long size = 0L;
         return size;
     }
 

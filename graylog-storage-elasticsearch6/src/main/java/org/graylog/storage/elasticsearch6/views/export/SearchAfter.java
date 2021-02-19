@@ -39,7 +39,7 @@ import static org.graylog2.plugin.streams.Stream.DEFAULT_EVENT_STREAM_IDS;
 public class SearchAfter implements RequestStrategy {
     private static final Logger LOG = LoggerFactory.getLogger(SearchAfter.class);
 
-    static final String DEFAULT_TIEBREAKER_FIELD = Message.FIELD_GL2_MESSAGE_ID;
+    static final String DEFAULT_TIEBREAKER_FIELD = Message.FIELD_TIMESTAMP;
     static final String EVENTS_TIEBREAKER_FIELD = Message.FIELD_ID;
 
     private final JestWrapper jestWrapper;
